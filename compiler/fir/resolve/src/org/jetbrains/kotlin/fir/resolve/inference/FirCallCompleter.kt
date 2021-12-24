@@ -97,7 +97,7 @@ class FirCallCompleter(
         if (call is FirExpression) {
             val resolvedTypeRef = typeRef.resolvedTypeFromPrototype(initialType)
             call.resultType = resolvedTypeRef
-            session.lookupTracker?.recordTypeResolveAsLookup(resolvedTypeRef, call.source, null)
+            session.lookupTracker?.recordTypeResolveAsLookup(resolvedTypeRef, call.source, components.context.file.source)
         }
 
         addConstraintFromExpectedType(
@@ -127,7 +127,8 @@ class FirCallCompleter(
                             components.returnTypeCalculator,
                             session.typeApproximator,
                             components.dataFlowAnalyzer,
-                            components.integerLiteralAndOperatorApproximationTransformer
+                            components.integerLiteralAndOperatorApproximationTransformer,
+                            components.context
                         ),
                         null
                     )
@@ -239,6 +240,7 @@ class FirCallCompleter(
             session.typeApproximator,
             components.dataFlowAnalyzer,
             components.integerLiteralAndOperatorApproximationTransformer,
+            components.context,
             mode
         )
     }
