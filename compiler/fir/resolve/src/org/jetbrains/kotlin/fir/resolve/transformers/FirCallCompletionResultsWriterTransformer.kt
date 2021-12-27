@@ -360,7 +360,7 @@ class FirCallCompletionResultsWriterTransformer(
             )?.toExpectedType()
         )
 
-        safeCallExpression.propagateTypeFromQualifiedAccessAfterNullCheck(safeCallExpression.receiver, session)
+        safeCallExpression.propagateTypeFromQualifiedAccessAfterNullCheck(safeCallExpression.receiver, session, context.file)
 
         return safeCallExpression
     }
