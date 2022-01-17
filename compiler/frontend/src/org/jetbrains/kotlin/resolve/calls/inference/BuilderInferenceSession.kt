@@ -326,17 +326,6 @@ class BuilderInferenceSession(
             commonSystem.registerTypeVariableIfNotPresent(it.typeVariable)
         }
 
-        for (parentSession in findAllParentBuildInferenceSessions()) {
-            for ((variable, stubType) in parentSession.stubsForPostponedVariables) {
-                commonSystem.registerTypeVariableIfNotPresent(variable)
-                commonSystem.addSubtypeConstraint(
-                    variable.defaultType,
-                    stubType,
-                    InjectedAnotherStubTypeConstraintPositionImpl(lambdaArgument)
-                )
-            }
-        }
-
         /*
         * storage can contain the following substitutions:
         *  TypeVariable(A) -> ProperType
@@ -432,6 +421,17 @@ class BuilderInferenceSession(
 
     private fun initializeCommonSystem(initialStorage: ConstraintStorage): Boolean {
         val nonFixedToVariablesSubstitutor = createNonFixedTypeToVariableSubstitutor()
+
+        for (parentSession in findAllParentBuildInferenceSessions()) {
+            for ((variable, stubType) in parentSession.stubsForPostponedVariables) {
+                commonSystem.registerTypeVariableIfNotPresent(variable)
+                commonSystem.addSubtypeConstraint(
+                    variable.defaultType,
+                    stubType,
+                    InjectedAnotherStubTypeConstraintPositionImpl(lambdaArgument)
+                )
+            }
+        }
 
         integrateConstraints(initialStorage, nonFixedToVariablesSubstitutor, false)
 
