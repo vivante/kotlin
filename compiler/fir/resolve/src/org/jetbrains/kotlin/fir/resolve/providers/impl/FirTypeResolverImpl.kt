@@ -485,6 +485,34 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
             }
             is FirFunctionTypeRef -> createFunctionalType(typeRef) to null
             is FirDynamicTypeRef -> ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null
+            is FirIntersectionTypeRef -> {
+                val (leftType, leftDiagnostic) = resolveType(
+                    typeRef.leftType,
+                    scopeClassDeclaration,
+                    areBareTypesAllowed,
+                    isOperandOfIsOperator,
+                    useSiteFile,
+                    supertypeSupplier
+                )
+                val (rightType, rightDiagnostic) = resolveType(
+                    typeRef.rightType,
+                    scopeClassDeclaration,
+                    areBareTypesAllowed,
+                    isOperandOfIsOperator,
+                    useSiteFile,
+                    supertypeSupplier
+                )
+
+                //MAYBE ConeIntersectionType better look like this affect txt output (not sure)
+                if (leftType.isAny) {
+                    ConeDefinitelyNotNullType(rightType) to rightDiagnostic //how properly concat (leftDiagnostic + rightDiagnostic)?
+                } else if (rightType.isAny) {
+                    ConeDefinitelyNotNullType(leftType) to leftDiagnostic //how properly concat (leftDiagnostic + rightDiagnostic)?
+                } else {
+                    ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null
+                }
+
+            }
             else -> error(typeRef.render())
         }
     }
