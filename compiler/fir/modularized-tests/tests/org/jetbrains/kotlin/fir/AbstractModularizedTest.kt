@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.fir
 
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.config.KotlinSourceRoot
+import org.jetbrains.kotlin.cli.jvm.config.configureJdkClasspathRoots
 import org.jetbrains.kotlin.cli.jvm.config.addJavaSourceRoot
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.config.CompilerConfiguration
@@ -99,6 +100,7 @@ abstract class AbstractModularizedTest : KtUsefulTestCase() {
             configuration.addJavaSourceRoot(it.path, it.packagePrefix)
         }
         configuration.addJvmClasspathRoots(moduleData.classpath)
+        configuration.configureJdkClasspathRoots()
 
         // in case of modular jdk only
         configuration.putIfNotNull(JVMConfigurationKeys.JDK_HOME, moduleData.modularJdkRoot)
