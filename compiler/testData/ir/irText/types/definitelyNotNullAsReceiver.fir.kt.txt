@@ -1,0 +1,14 @@
+fun <T : Any?> T.foo() {
+}
+
+fun <T : Any?> foo(l: Function1<T, Unit>) {
+}
+
+fun box() {
+  "".foo<String?>()
+  foo<String?>(l = local fun <anonymous>(it: String) {
+    it /*~> Unit */
+  }
+)
+}
+
