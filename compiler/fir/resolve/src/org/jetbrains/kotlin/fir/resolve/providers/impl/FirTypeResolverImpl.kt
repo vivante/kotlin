@@ -487,7 +487,7 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
             is FirDynamicTypeRef -> ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null
             is FirIntersectionTypeRef -> {
                 val (leftType, leftDiagnostic) = resolveType(
-                    typeRef.leftType,
+                    typeRef.leftType ?: return ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null,
                     scopeClassDeclaration,
                     areBareTypesAllowed,
                     isOperandOfIsOperator,
@@ -495,7 +495,7 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
                     supertypeSupplier
                 )
                 val (rightType, rightDiagnostic) = resolveType(
-                    typeRef.rightType,
+                    typeRef.rightType ?: return ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null,
                     scopeClassDeclaration,
                     areBareTypesAllowed,
                     isOperandOfIsOperator,

@@ -18,8 +18,8 @@ import org.jetbrains.kotlin.fir.visitors.*
 abstract class FirIntersectionTypeRef : FirTypeRef() {
     abstract override val source: KtSourceElement?
     abstract override val annotations: List<FirAnnotation>
-    abstract val leftType: FirTypeRef
-    abstract val rightType: FirTypeRef
+    abstract val leftType: FirTypeRef?
+    abstract val rightType: FirTypeRef?
 
     override fun <R, D> accept(visitor: FirVisitor<R, D>, data: D): R = visitor.visitIntersectionTypeRef(this, data)
 

@@ -1753,9 +1753,8 @@ open class RawFirBuilder(
                 }
                 is KtIntersectionType -> FirIntersectionTypeRefBuilder().apply {
                     this.source = source
-                    //Null checks?
-                    leftType = unwrappedElement.getLeftTypeRef()!!.toFirOrErrorType()
-                    rightType = unwrappedElement.getRightTypeRef()!!.toFirOrErrorType()
+                    leftType = unwrappedElement.getLeftTypeRef()?.toFirOrErrorType()
+                    rightType = unwrappedElement.getRightTypeRef()?.toFirOrErrorType()
                 }
                 null -> FirErrorTypeRefBuilder().apply {
                     this.source = source

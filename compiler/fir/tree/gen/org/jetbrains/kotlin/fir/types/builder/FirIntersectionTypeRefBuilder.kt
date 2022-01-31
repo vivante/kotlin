@@ -24,8 +24,8 @@ import org.jetbrains.kotlin.fir.visitors.*
 class FirIntersectionTypeRefBuilder : FirAnnotationContainerBuilder {
     override var source: KtSourceElement? = null
     override val annotations: MutableList<FirAnnotation> = mutableListOf()
-    lateinit var leftType: FirTypeRef
-    lateinit var rightType: FirTypeRef
+    var leftType: FirTypeRef? = null
+    var rightType: FirTypeRef? = null
 
     override fun build(): FirIntersectionTypeRef {
         return FirIntersectionTypeRefImpl(
@@ -39,7 +39,7 @@ class FirIntersectionTypeRefBuilder : FirAnnotationContainerBuilder {
 }
 
 @OptIn(ExperimentalContracts::class)
-inline fun buildIntersectionTypeRef(init: FirIntersectionTypeRefBuilder.() -> Unit): FirIntersectionTypeRef {
+inline fun buildIntersectionTypeRef(init: FirIntersectionTypeRefBuilder.() -> Unit = {}): FirIntersectionTypeRef {
     contract {
         callsInPlace(init, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
     }
