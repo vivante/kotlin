@@ -155,7 +155,7 @@ fun compileModulesUsingFrontendIrAndLaightTree(
 
         performanceManager?.notifyIRTranslationFinished()
 
-        val codegenOutput = generateCodeFromIr(irInput, compilerEnvironment)
+        val codegenOutput = generateCodeFromIr(irInput, compilerEnvironment, performanceManager)
 
         diagnosticsReporter.reportToMessageCollector(messageCollector, renderDiagnosticName)
 
@@ -203,7 +203,8 @@ fun convertAnalyzedFirToIr(
 
 fun generateCodeFromIr(
     input: ModuleCompilerIrBackendInput,
-    environment: ModuleCompilerEnvironment
+    environment: ModuleCompilerEnvironment,
+    performanceManager: CommonCompilerPerformanceManager?
 ): ModuleCompilerOutput {
     // IR
     val codegenFactory = JvmIrCodegenFactory(
@@ -235,11 +236,16 @@ fun generateCodeFromIr(
         environment.diagnosticsReporter
     ).build()
 
+    performanceManager?.notifyIRLoweringStarted()
+
     generationState.beforeCompile()
     codegenFactory.generateModuleInFrontendIRMode(
         generationState, input.irModuleFragment, input.symbolTable, input.extensions,
         FirJvmBackendExtension(input.firSession, input.components)
-    )
+    ) {
+        performanceManager?.notifyIRLoweringFinished()
+        performanceManager?.notifyIRGenerationStarted()
+    }
     CodegenFactory.doCheckCancelled(generationState)
     generationState.factory.done()
 

@@ -288,7 +288,7 @@ class IncrementalFirJvmCompilerRunner(
                 cycleResult.session
             )
 
-            val codegenOutput = generateCodeFromIr(irInput, compilerEnvironment)
+            val codegenOutput = generateCodeFromIr(irInput, compilerEnvironment, performanceManager)
 
             performanceManager?.notifyIRGenerationFinished()
             performanceManager?.notifyGenerationFinished()
