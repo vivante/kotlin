@@ -1,3 +1,4 @@
+// FIR_IDENTICAL
 //!LANGUAGE: +DefinitelyNonNullableTypes
 
 fun <T> asFoo(t: T) = t as (T & Any)

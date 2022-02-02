@@ -1,4 +1,4 @@
-fun <T : Any?> elvisLike(x: T, y: T): T {
+fun <T : Any?> elvisLike(x: T, y: (T & Any)): (T & Any) {
   return { // BLOCK
     val <elvis>: T = x
     when {
