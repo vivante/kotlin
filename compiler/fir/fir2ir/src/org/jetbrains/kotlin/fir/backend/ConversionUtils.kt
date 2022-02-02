@@ -5,10 +5,11 @@
 
 package org.jetbrains.kotlin.fir.backend
 
+import com.intellij.lang.LighterASTNode
+import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiCompiledElement
-import org.jetbrains.kotlin.KtFakeSourceElementKind
-import org.jetbrains.kotlin.KtNodeTypes
-import org.jetbrains.kotlin.KtSourceElement
+import com.intellij.util.diff.FlyweightCapableTreeStructure
+import org.jetbrains.kotlin.*
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.InlineClassRepresentation
 import org.jetbrains.kotlin.descriptors.Modality
@@ -62,12 +63,9 @@ import org.jetbrains.kotlin.ir.util.functions
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.name.StandardClassIds
-import org.jetbrains.kotlin.psi
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
-import org.jetbrains.kotlin.psi.psiUtil.endOffset
 import org.jetbrains.kotlin.psi.psiUtil.startOffsetSkippingComments
-import org.jetbrains.kotlin.resolve.calls.util.isSingleUnderscore
 import org.jetbrains.kotlin.types.ConstantValueKind
 import org.jetbrains.kotlin.types.Variance
 import org.jetbrains.kotlin.util.OperatorNameConventions
@@ -677,10 +675,10 @@ fun FirSession.createFilesWithGeneratedDeclarations(): List<FirFile> {
 fun FirDeclaration?.computeIrOrigin(predefinedOrigin: IrDeclarationOrigin? = null): IrDeclarationOrigin {
     return predefinedOrigin
         ?: (this?.origin as? FirDeclarationOrigin.Plugin)?.let { IrPluginDeclarationOrigin(it.key) }
-        ?: ((this as? FirValueParameter)?.source.psi as? KtParameter)?.let {
-            if (it.isSingleUnderscore) {
+        ?: (this as? FirValueParameter)?.let {
+            if (it.name == SpecialNames.UNDERSCORE_FOR_UNUSED_VAR) {
                 IrDeclarationOrigin.UNDERSCORE_PARAMETER
-            } else if (it.destructuringDeclaration != null) {
+            } else if (it.source?.isDestructuringDeclaration() == true) {
                 IrDeclarationOrigin.DESTRUCTURED_OBJECT_PARAMETER
             } else {
                 null
@@ -688,6 +686,25 @@ fun FirDeclaration?.computeIrOrigin(predefinedOrigin: IrDeclarationOrigin? = nul
         }
         ?: IrDeclarationOrigin.DEFINED
 }
+
+fun KtSourceElement.isDestructuringDeclaration(): Boolean = when (this) {
+    is KtPsiSourceElement -> (psi as? KtParameter)?.destructuringDeclaration != null
+    is KtLightSourceElement -> {
+        val children = Ref<Array<LighterASTNode?>>()
+        val count = treeStructure.getChildren(lighterASTNode, children)
+        count > 0 && children.get().any { it?.tokenType == KtNodeTypes.DESTRUCTURING_DECLARATION }
+    }
+}
+
+private fun LighterASTNode.getChildren(
+    tree: FlyweightCapableTreeStructure<LighterASTNode>,
+    filter: ((LighterASTNode) -> Boolean)? = null
+): List<LighterASTNode> {
+    val children = Ref<Array<LighterASTNode?>>()
+    val count = tree.getChildren(this, children)
+    return if (count > 0) children.get().mapNotNull { it?.takeIf { filter?.invoke(it) ?: true } } else emptyList()
+}
+
 
 fun FirVariableAssignment.getIrAssignmentOrigin(): IrStatementOrigin {
     val calleeReferenceSymbol = calleeReference.toResolvedCallableSymbol() ?: return IrStatementOrigin.EQ
