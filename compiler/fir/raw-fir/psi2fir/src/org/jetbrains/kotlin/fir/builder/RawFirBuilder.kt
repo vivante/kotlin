@@ -1753,6 +1753,7 @@ open class RawFirBuilder(
                 }
                 is KtIntersectionType -> FirIntersectionTypeRefBuilder().apply {
                     this.source = source
+                    isMarkedNullable = isNullable
                     leftType = unwrappedElement.getLeftTypeRef()?.toFirOrErrorType()
                     rightType = unwrappedElement.getRightTypeRef()?.toFirOrErrorType()
                 }

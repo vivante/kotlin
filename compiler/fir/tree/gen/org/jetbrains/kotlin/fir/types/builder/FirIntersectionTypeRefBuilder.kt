@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.fir.visitors.*
 class FirIntersectionTypeRefBuilder : FirAnnotationContainerBuilder {
     override var source: KtSourceElement? = null
     override val annotations: MutableList<FirAnnotation> = mutableListOf()
+    var isMarkedNullable: Boolean by kotlin.properties.Delegates.notNull<Boolean>()
     var leftType: FirTypeRef? = null
     var rightType: FirTypeRef? = null
 
@@ -31,6 +32,7 @@ class FirIntersectionTypeRefBuilder : FirAnnotationContainerBuilder {
         return FirIntersectionTypeRefImpl(
             source,
             annotations,
+            isMarkedNullable,
             leftType,
             rightType,
         )
@@ -39,7 +41,7 @@ class FirIntersectionTypeRefBuilder : FirAnnotationContainerBuilder {
 }
 
 @OptIn(ExperimentalContracts::class)
-inline fun buildIntersectionTypeRef(init: FirIntersectionTypeRefBuilder.() -> Unit = {}): FirIntersectionTypeRef {
+inline fun buildIntersectionTypeRef(init: FirIntersectionTypeRefBuilder.() -> Unit): FirIntersectionTypeRef {
     contract {
         callsInPlace(init, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
     }

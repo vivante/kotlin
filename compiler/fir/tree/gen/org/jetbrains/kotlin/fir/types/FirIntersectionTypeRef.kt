@@ -15,9 +15,10 @@ import org.jetbrains.kotlin.fir.visitors.*
  * DO NOT MODIFY IT MANUALLY
  */
 
-abstract class FirIntersectionTypeRef : FirTypeRef() {
+abstract class FirIntersectionTypeRef : FirTypeRefWithNullability() {
     abstract override val source: KtSourceElement?
     abstract override val annotations: List<FirAnnotation>
+    abstract override val isMarkedNullable: Boolean
     abstract val leftType: FirTypeRef?
     abstract val rightType: FirTypeRef?
 

@@ -279,7 +279,7 @@ abstract class FirDefaultVisitorVoid : FirVisitorVoid() {
 
     override fun visitFunctionTypeRef(functionTypeRef: FirFunctionTypeRef)  = visitTypeRefWithNullability(functionTypeRef)
 
-    override fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef)  = visitTypeRef(intersectionTypeRef)
+    override fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef)  = visitTypeRefWithNullability(intersectionTypeRef)
 
     override fun visitImplicitTypeRef(implicitTypeRef: FirImplicitTypeRef)  = visitTypeRef(implicitTypeRef)
 

@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.fir.visitors.*
 internal class FirIntersectionTypeRefImpl(
     override val source: KtSourceElement?,
     override val annotations: MutableList<FirAnnotation>,
+    override val isMarkedNullable: Boolean,
     override var leftType: FirTypeRef?,
     override var rightType: FirTypeRef?,
 ) : FirIntersectionTypeRef() {

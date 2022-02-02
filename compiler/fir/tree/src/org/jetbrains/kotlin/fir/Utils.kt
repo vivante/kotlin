@@ -60,9 +60,10 @@ fun <R : FirTypeRef> R.copyWithNewSourceKind(newKind: KtFakeSourceElementKind): 
         }
         is FirImplicitBuiltinTypeRef -> typeRef.withFakeSource(newKind)
         is FirIntersectionTypeRef -> buildIntersectionTypeRef {
+            source = newSource
+            isMarkedNullable = typeRef.isMarkedNullable
             leftType = typeRef.leftType
             rightType = typeRef.rightType
-            source = newSource
         }
         else -> TODO("Not implemented for ${typeRef::class}")
     } as R

@@ -279,7 +279,7 @@ abstract class FirDefaultVisitor<out R, in D> : FirVisitor<R, D>() {
 
     override fun visitFunctionTypeRef(functionTypeRef: FirFunctionTypeRef, data: D): R  = visitTypeRefWithNullability(functionTypeRef, data)
 
-    override fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef, data: D): R  = visitTypeRef(intersectionTypeRef, data)
+    override fun visitIntersectionTypeRef(intersectionTypeRef: FirIntersectionTypeRef, data: D): R  = visitTypeRefWithNullability(intersectionTypeRef, data)
 
     override fun visitImplicitTypeRef(implicitTypeRef: FirImplicitTypeRef, data: D): R  = visitTypeRef(implicitTypeRef, data)
 

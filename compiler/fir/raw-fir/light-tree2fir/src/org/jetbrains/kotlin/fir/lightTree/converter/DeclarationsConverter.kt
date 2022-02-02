@@ -1938,7 +1938,7 @@ class DeclarationsConverter(
                     source = typeRefSource
                     isMarkedNullable = false
                 }
-                INTERSECTION_TYPE -> firType = convertIntersectionType(typeRefSource, it)
+                INTERSECTION_TYPE -> firType = convertIntersectionType(typeRefSource, it, false)
                 CONTEXT_RECEIVER_LIST, TokenType.ERROR_ELEMENT -> firType =
                     buildErrorTypeRef {
                         source = typeRefSource
@@ -1960,7 +1960,7 @@ class DeclarationsConverter(
 
     private fun Collection<TypeModifier>.hasSuspend() = any { it.hasSuspend() }
 
-    private fun convertIntersectionType(typeRefSource: KtLightSourceElement, intersectionType: LighterASTNode): FirTypeRef {
+    private fun convertIntersectionType(typeRefSource: KtSourceElement, intersectionType: LighterASTNode, isNullable: Boolean): FirTypeRef {
         val children = arrayListOf<FirTypeRef>()
         intersectionType.forEachChildren {
             if (it.tokenType != KtTokens.AND) { //skip in forEachChildren?
@@ -1977,6 +1977,7 @@ class DeclarationsConverter(
 
         return buildIntersectionTypeRef {
             source = typeRefSource
+            isMarkedNullable = isNullable
             leftType = children[0]
             rightType = children[1]
         }
@@ -2016,11 +2017,7 @@ class DeclarationsConverter(
                     source = typeRefSource
                     isMarkedNullable = true
                 }
-                INTERSECTION_TYPE -> firType =
-                    buildErrorTypeRef {
-                        source = typeRefSource
-                        diagnostic = ConeSimpleDiagnostic("Intersection types are not supported yet", DiagnosticKind.Syntax)
-                    }
+                INTERSECTION_TYPE -> firType = convertIntersectionType(typeRefSource, it, isNullable)
             }
         }
 
