@@ -390,7 +390,7 @@ fun createSession(
         externalSessionProvider = sessionProvider,
         projectEnvironment,
         moduleConfiguration.languageVersionSettings,
-        sourceScope,
+        projectEnvironment.getSearchScopeForProjectJavaSources(),
         librariesScope,
         lookupTracker = moduleConfiguration.get(CommonConfigurationKeys.LOOKUP_TRACKER),
         providerAndScopeForIncrementalCompilation,
