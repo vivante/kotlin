@@ -4,19 +4,19 @@ interface I<T : Any?> {
 
 }
 
-fun <T : Any?> foo(i: I<T>) {
+fun <T : Any?> foo(i: I<(T & Any)>) {
   i.input(t = i.output())
 }
 
-fun <T : Any?> bar(i: I<out T>): T {
+fun <T : Any?> bar(i: I<out (T & Any)>): (T & Any) {
   return i.output()
 }
 
-fun <T : Any?> qux(t: T, i: I<in T>) {
+fun <T : Any?> qux(t: T, i: I<in (T & Any)>) {
   i.input(t = CHECK_NOT_NULL<T>(arg0 = t))
 }
 
-class C<TT : Any?> : I<TT> {
+class C<TT : Any?> : I<(TT & Any)> {
   constructor(t: TT) /* primary */ {
     super/*Any*/()
     /* <init>() */
@@ -27,10 +27,10 @@ class C<TT : Any?> : I<TT> {
     field = t
     get
 
-  override fun input(t: TT) {
+  override fun input(t: (TT & Any)) {
   }
 
-  override fun output(): TT {
+  override fun output(): (TT & Any) {
     return CHECK_NOT_NULL<TT>(arg0 = <this>.<get-t>())
   }
 

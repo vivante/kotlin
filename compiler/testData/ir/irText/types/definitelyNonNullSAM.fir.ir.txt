@@ -25,18 +25,18 @@ FILE fqName:<root> fileName:/definitelyNonNullSAM.kt
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
         INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Test modality:FINAL visibility:public superTypes:[kotlin.Any]'
-    FUN name:foo visibility:public modality:FINAL <> ($this:<root>.Test<S of <root>.Test>) returnType:<root>.FIn<S of <root>.Test>
+    FUN name:foo visibility:public modality:FINAL <> ($this:<root>.Test<S of <root>.Test>) returnType:<root>.FIn<{S of <root>.Test & Any}>
       $this: VALUE_PARAMETER name:<this> type:<root>.Test<S of <root>.Test>
       BLOCK_BODY
-        RETURN type=kotlin.Nothing from='public final fun foo (): <root>.FIn<S of <root>.Test> declared in <root>.Test'
-          TYPE_OP type=<root>.FIn<S of <root>.Test> origin=SAM_CONVERSION typeOperand=<root>.FIn<S of <root>.Test>
-            FUN_EXPR type=kotlin.Function1<S of <root>.Test, kotlin.Unit> origin=LAMBDA
-              FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (sx:S of <root>.Test) returnType:kotlin.Unit
-                VALUE_PARAMETER name:sx index:0 type:S of <root>.Test
+        RETURN type=kotlin.Nothing from='public final fun foo (): <root>.FIn<{S of <root>.Test & Any}> declared in <root>.Test'
+          TYPE_OP type=<root>.FIn<{S of <root>.Test & Any}> origin=SAM_CONVERSION typeOperand=<root>.FIn<{S of <root>.Test & Any}>
+            FUN_EXPR type=kotlin.Function1<{S of <root>.Test & Any}, kotlin.Unit> origin=LAMBDA
+              FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (sx:{S of <root>.Test & Any}) returnType:kotlin.Unit
+                VALUE_PARAMETER name:sx index:0 type:{S of <root>.Test & Any}
                 BLOCK_BODY
                   TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
                     CALL 'public open fun toString (): kotlin.String declared in kotlin.Any' type=kotlin.String origin=null
-                      $this: GET_VAR 'sx: S of <root>.Test declared in <root>.Test.foo.<anonymous>' type=S of <root>.Test origin=null
+                      $this: GET_VAR 'sx: {S of <root>.Test & Any} declared in <root>.Test.foo.<anonymous>' type={S of <root>.Test & Any} origin=null
     FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
       overridden:
         public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
@@ -55,21 +55,21 @@ FILE fqName:<root> fileName:/definitelyNonNullSAM.kt
     BLOCK_BODY
       TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
         BLOCK type=<root>.bar.<no name provided><T of <root>.bar> origin=OBJECT_LITERAL
-          CLASS CLASS name:<no name provided> modality:FINAL visibility:local superTypes:[<root>.FIn<T of <root>.bar>]
+          CLASS CLASS name:<no name provided> modality:FINAL visibility:local superTypes:[<root>.FIn<{T of <root>.bar & Any}>]
             $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:<root>.bar.<no name provided><T of <root>.bar>
             CONSTRUCTOR visibility:private <> () returnType:<root>.bar.<no name provided><T of <root>.bar> [primary]
               BLOCK_BODY
                 DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
-                INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:<no name provided> modality:FINAL visibility:local superTypes:[<root>.FIn<T of <root>.bar>]'
-            FUN name:f visibility:public modality:FINAL <> ($this:<root>.bar.<no name provided><T of <root>.bar>, sx:T of <root>.bar) returnType:kotlin.Unit
+                INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:<no name provided> modality:FINAL visibility:local superTypes:[<root>.FIn<{T of <root>.bar & Any}>]'
+            FUN name:f visibility:public modality:FINAL <> ($this:<root>.bar.<no name provided><T of <root>.bar>, sx:{T of <root>.bar & Any}) returnType:kotlin.Unit
               overridden:
                 public abstract fun f (x: T of <root>.FIn): kotlin.Unit declared in <root>.FIn
               $this: VALUE_PARAMETER name:<this> type:<root>.bar.<no name provided><T of <root>.bar>
-              VALUE_PARAMETER name:sx index:0 type:T of <root>.bar
+              VALUE_PARAMETER name:sx index:0 type:{T of <root>.bar & Any}
               BLOCK_BODY
                 TYPE_OP type=kotlin.Unit origin=IMPLICIT_COERCION_TO_UNIT typeOperand=kotlin.Unit
                   CALL 'public open fun toString (): kotlin.String declared in kotlin.Any' type=kotlin.String origin=null
-                    $this: GET_VAR 'sx: T of <root>.bar declared in <root>.bar.<no name provided>.f' type=T of <root>.bar origin=null
+                    $this: GET_VAR 'sx: {T of <root>.bar & Any} declared in <root>.bar.<no name provided>.f' type={T of <root>.bar & Any} origin=null
             FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
               overridden:
                 public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in <root>.FIn
@@ -172,38 +172,38 @@ FILE fqName:<root> fileName:/definitelyNonNullSAM.kt
         public open fun toString (): kotlin.String [fake_override] declared in <root>.I1
         public open fun toString (): kotlin.String [fake_override] declared in <root>.I2
       $this: VALUE_PARAMETER name:<this> type:kotlin.Any
-  CLASS CLASS name:AD modality:ABSTRACT visibility:public superTypes:[<root>.AC<T of <root>.AD>]
+  CLASS CLASS name:AD modality:ABSTRACT visibility:public superTypes:[<root>.AC<{T of <root>.AD & Any}>]
     $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:<root>.AD<T of <root>.AD>
     TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?]
     CONSTRUCTOR visibility:public <> () returnType:<root>.AD<T of <root>.AD> [primary]
       BLOCK_BODY
         DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in <root>.AC'
-          <T>: T of <root>.AD
-        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:AD modality:ABSTRACT visibility:public superTypes:[<root>.AC<T of <root>.AD>]'
+          <T>: {T of <root>.AD & Any}
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:AD modality:ABSTRACT visibility:public superTypes:[<root>.AC<{T of <root>.AD & Any}>]'
     PROPERTY name:l visibility:public modality:OPEN [val]
       overridden:
         public abstract l: @[ExtensionFunctionType] kotlin.Function1<T of <root>.AC, kotlin.Unit> [fake_override,val]
-      FIELD PROPERTY_BACKING_FIELD name:l type:@[ExtensionFunctionType] kotlin.Function1<T of <root>.AD, kotlin.Unit> visibility:private [final]
+      FIELD PROPERTY_BACKING_FIELD name:l type:@[ExtensionFunctionType] kotlin.Function1<{T of <root>.AD & Any}, kotlin.Unit> visibility:private [final]
         EXPRESSION_BODY
-          FUN_EXPR type=@[ExtensionFunctionType] kotlin.Function1<T of <root>.AD, kotlin.Unit> origin=LAMBDA
-            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> ($receiver:T of <root>.AD) returnType:kotlin.Unit
-              $receiver: VALUE_PARAMETER name:<this> type:T of <root>.AD
+          FUN_EXPR type=@[ExtensionFunctionType] kotlin.Function1<{T of <root>.AD & Any}, kotlin.Unit> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> ($receiver:{T of <root>.AD & Any}) returnType:kotlin.Unit
+              $receiver: VALUE_PARAMETER name:<this> type:{T of <root>.AD & Any}
               BLOCK_BODY
                 RETURN type=kotlin.Nothing from='local final fun <anonymous> (): kotlin.Unit declared in <root>.AD.l'
                   GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
-      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-l> visibility:public modality:OPEN <> ($this:<root>.AD<T of <root>.AD>) returnType:@[ExtensionFunctionType] kotlin.Function1<T of <root>.AD, kotlin.Unit>
+      FUN DEFAULT_PROPERTY_ACCESSOR name:<get-l> visibility:public modality:OPEN <> ($this:<root>.AD<T of <root>.AD>) returnType:@[ExtensionFunctionType] kotlin.Function1<{T of <root>.AD & Any}, kotlin.Unit>
         correspondingProperty: PROPERTY name:l visibility:public modality:OPEN [val]
         overridden:
           public abstract fun <get-l> (): @[ExtensionFunctionType] kotlin.Function1<T of <root>.AC, kotlin.Unit> [fake_override] declared in <root>.AC
         $this: VALUE_PARAMETER name:<this> type:<root>.AD<T of <root>.AD>
         BLOCK_BODY
-          RETURN type=kotlin.Nothing from='public open fun <get-l> (): @[ExtensionFunctionType] kotlin.Function1<T of <root>.AD, kotlin.Unit> declared in <root>.AD'
-            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:l type:@[ExtensionFunctionType] kotlin.Function1<T of <root>.AD, kotlin.Unit> visibility:private [final]' type=@[ExtensionFunctionType] kotlin.Function1<T of <root>.AD, kotlin.Unit> origin=null
+          RETURN type=kotlin.Nothing from='public open fun <get-l> (): @[ExtensionFunctionType] kotlin.Function1<{T of <root>.AD & Any}, kotlin.Unit> declared in <root>.AD'
+            GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:l type:@[ExtensionFunctionType] kotlin.Function1<{T of <root>.AD & Any}, kotlin.Unit> visibility:private [final]' type=@[ExtensionFunctionType] kotlin.Function1<{T of <root>.AD & Any}, kotlin.Unit> origin=null
               receiver: GET_VAR '<this>: <root>.AD<T of <root>.AD> declared in <root>.AD.<get-l>' type=<root>.AD<T of <root>.AD> origin=null
     PROPERTY FAKE_OVERRIDE name:sam visibility:public modality:OPEN [fake_override,val]
       overridden:
         public open sam: <root>.FIn<T of <root>.AC> [val]
-      FUN FAKE_OVERRIDE name:<get-sam> visibility:public modality:OPEN <> ($this:<root>.AC<T of <root>.AC>) returnType:<root>.FIn<T of <root>.AD> [fake_override]
+      FUN FAKE_OVERRIDE name:<get-sam> visibility:public modality:OPEN <> ($this:<root>.AC<T of <root>.AC>) returnType:<root>.FIn<{T of <root>.AD & Any}> [fake_override]
         correspondingProperty: PROPERTY FAKE_OVERRIDE name:sam visibility:public modality:OPEN [fake_override,val]
         overridden:
           public open fun <get-sam> (): <root>.FIn<T of <root>.AC> declared in <root>.AC
