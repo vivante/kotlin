@@ -504,9 +504,9 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
                 )
 
                 //MAYBE ConeIntersectionType better look like this affect txt output (not sure)
-                if (leftType.isAny) {
+                if (leftType.isAny && rightType is ConeTypeParameterType) {
                     ConeDefinitelyNotNullType(rightType) to rightDiagnostic //how properly concat (leftDiagnostic + rightDiagnostic)?
-                } else if (rightType.isAny) {
+                } else if (rightType.isAny && leftType is ConeTypeParameterType) {
                     ConeDefinitelyNotNullType(leftType) to leftDiagnostic //how properly concat (leftDiagnostic + rightDiagnostic)?
                 } else {
                     ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null
