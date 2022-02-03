@@ -487,15 +487,17 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
             is FirDynamicTypeRef -> ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null
             is FirIntersectionTypeRef -> {
                 val (leftType, leftDiagnostic) = resolveType(
-                    typeRef.leftType ?: return ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null,
+                    typeRef.leftType
+                        ?: return ConeKotlinErrorType(ConeSimpleDiagnostic("Problem during processing intersection type")) to null,
                     scopeClassDeclaration,
                     areBareTypesAllowed,
                     isOperandOfIsOperator,
                     useSiteFile,
                     supertypeSupplier
                 )
-                val (rightType, rightDiagnostic) = resolveType(
-                    typeRef.rightType ?: return ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null,
+                val (rightType, _) = resolveType(
+                    typeRef.rightType
+                        ?: return ConeKotlinErrorType(ConeSimpleDiagnostic("Problem during processing intersection type")) to null,
                     scopeClassDeclaration,
                     areBareTypesAllowed,
                     isOperandOfIsOperator,
@@ -503,13 +505,10 @@ class FirTypeResolverImpl(private val session: FirSession) : FirTypeResolver() {
                     supertypeSupplier
                 )
 
-                //MAYBE ConeIntersectionType better look like this affect txt output (not sure)
-                if (leftType.isAny && rightType is ConeTypeParameterType) {
-                    ConeDefinitelyNotNullType(rightType) to rightDiagnostic //how properly concat (leftDiagnostic + rightDiagnostic)?
-                } else if (rightType.isAny && leftType is ConeTypeParameterType) {
+                if (rightType.isAny && leftType is ConeTypeParameterType) {
                     ConeDefinitelyNotNullType(leftType) to leftDiagnostic //how properly concat (leftDiagnostic + rightDiagnostic)?
                 } else {
-                    ConeKotlinErrorType(ConeUnsupportedDynamicType()) to null
+                    ConeKotlinErrorType(ConeUnsupported("Intersection types are not supported yet", typeRef.source)) to null
                 }
 
             }
