@@ -629,6 +629,78 @@ public infix fun Short.downTo(to: Short): IntProgression {
 }
 
 /**
+ * Returns the first element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use first property instead", ReplaceWith("first"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+public fun IntProgression.first(): Int {
+    return (this as Iterable<Int>).first()
+}
+
+/**
+ * Returns the first element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use first property instead", ReplaceWith("first"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+public fun LongProgression.first(): Long {
+    return (this as Iterable<Long>).first()
+}
+
+/**
+ * Returns the first element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use first property instead", ReplaceWith("first"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+public fun CharProgression.first(): Char {
+    return (this as Iterable<Char>).first()
+}
+
+/**
+ * Returns the last element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use last property instead", ReplaceWith("last"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+public fun IntProgression.last(): Int {
+    return (this as Iterable<Int>).last()
+}
+
+/**
+ * Returns the last element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use last property instead", ReplaceWith("last"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+public fun LongProgression.last(): Long {
+    return (this as Iterable<Long>).last()
+}
+
+/**
+ * Returns the last element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use last property instead", ReplaceWith("last"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+public fun CharProgression.last(): Char {
+    return (this as Iterable<Char>).last()
+}
+
+/**
  * Returns a progression that goes over the same range in the opposite direction with the same step.
  */
 public fun IntProgression.reversed(): IntProgression {

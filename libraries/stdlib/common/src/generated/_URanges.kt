@@ -238,6 +238,58 @@ public infix fun UShort.downTo(to: UShort): UIntProgression {
 }
 
 /**
+ * Returns the first element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use first property instead", ReplaceWith("first"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun UIntProgression.first(): UInt {
+    return (this as Iterable<UInt>).first()
+}
+
+/**
+ * Returns the first element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use first property instead", ReplaceWith("first"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun ULongProgression.first(): ULong {
+    return (this as Iterable<ULong>).first()
+}
+
+/**
+ * Returns the last element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use last property instead", ReplaceWith("last"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun UIntProgression.last(): UInt {
+    return (this as Iterable<UInt>).last()
+}
+
+/**
+ * Returns the last element.
+ * 
+ * @throws NoSuchElementException if the collection is empty.
+ */
+@Deprecated("Use last property instead", ReplaceWith("last"))
+@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun ULongProgression.last(): ULong {
+    return (this as Iterable<ULong>).last()
+}
+
+/**
  * Returns a progression that goes over the same range in the opposite direction with the same step.
  */
 @SinceKotlin("1.5")
