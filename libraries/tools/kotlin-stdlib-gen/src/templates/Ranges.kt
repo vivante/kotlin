@@ -5,7 +5,6 @@
 
 package templates
 
-import templates.DocExtensions.collection
 import templates.Family.*
 import templates.PrimitiveType.Companion.maxByCapacity
 
@@ -231,29 +230,28 @@ object RangeOps : TemplateGroupBase() {
         }
     }
 
-    val f_first = fn("first()") {
-        include(ProgressionsOfPrimitives, rangePrimitives)
-    } builder {
-        returns(primitive.toString())
-        since("1.7.0")
-        doc { "Returns the first ${f.element}." }
-        throws("NoSuchElementException", "if the ${f.collection} is empty.")
-        deprecate(Deprecation("Use first property instead", replaceWith = "first", warningSince = "1.7.0"))
-        body {
-            "return (this as Iterable<${primitive}>).first()"
-        }
-    }
+    val f_firstLast = sequence {
+        fun def(op: String, nullable: Boolean) = fn("$op${"OrNull".ifOrEmpty(nullable)}()") {
+            include(ProgressionsOfPrimitives, rangePrimitives)
+        } builder {
+            returns("$primitive${"?".ifOrEmpty(nullable)}")
+            since("1.7.0")
 
-    val f_last = fn("last()") {
-        include(ProgressionsOfPrimitives, rangePrimitives)
-    } builder {
-        returns(primitive.toString())
-        since("1.7.0")
-        doc { "Returns the last ${f.element}." }
-        throws("NoSuchElementException", "if the ${f.collection} is empty.")
-        deprecate(Deprecation("Use last property instead", replaceWith = "last", warningSince = "1.7.0"))
-        body {
-            "return (this as Iterable<${primitive}>).last()"
+            doc {
+                val onEmpty = if (nullable) "`null`" else "throws [NoSuchElementException]"
+                "Returns the $op ${f.element}, or $onEmpty if the ${f.collection} is empty."
+            }
+
+            body {
+                val onEmpty = if (nullable) "null" else "throw NoSuchElementException(\"Progression is empty.\")"
+                "return if (!isEmpty()) $op else $onEmpty"
+            }
+        }
+
+        for (op in listOf("first", "last")) {
+            for (nullable in listOf(false, true)) {
+                yield(def(op, nullable))
+            }
         }
     }
 }

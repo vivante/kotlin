@@ -629,75 +629,99 @@ public infix fun Short.downTo(to: Short): IntProgression {
 }
 
 /**
- * Returns the first element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use first property instead", ReplaceWith("first"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 public fun IntProgression.first(): Int {
-    return (this as Iterable<Int>).first()
+    return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the first element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use first property instead", ReplaceWith("first"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 public fun LongProgression.first(): Long {
-    return (this as Iterable<Long>).first()
+    return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the first element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use first property instead", ReplaceWith("first"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 public fun CharProgression.first(): Char {
-    return (this as Iterable<Char>).first()
+    return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the last element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the first element, or `null` if the progression is empty.
  */
-@Deprecated("Use last property instead", ReplaceWith("last"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+public fun IntProgression.firstOrNull(): Int? {
+    return if (!isEmpty()) first else null
+}
+
+/**
+ * Returns the first element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+public fun LongProgression.firstOrNull(): Long? {
+    return if (!isEmpty()) first else null
+}
+
+/**
+ * Returns the first element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+public fun CharProgression.firstOrNull(): Char? {
+    return if (!isEmpty()) first else null
+}
+
+/**
+ * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
+ */
 @SinceKotlin("1.7.0")
 public fun IntProgression.last(): Int {
-    return (this as Iterable<Int>).last()
+    return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the last element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use last property instead", ReplaceWith("last"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 public fun LongProgression.last(): Long {
-    return (this as Iterable<Long>).last()
+    return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the last element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use last property instead", ReplaceWith("last"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 public fun CharProgression.last(): Char {
-    return (this as Iterable<Char>).last()
+    return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
+}
+
+/**
+ * Returns the last element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+public fun IntProgression.lastOrNull(): Int? {
+    return if (!isEmpty()) last else null
+}
+
+/**
+ * Returns the last element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+public fun LongProgression.lastOrNull(): Long? {
+    return if (!isEmpty()) last else null
+}
+
+/**
+ * Returns the last element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+public fun CharProgression.lastOrNull(): Char? {
+    return if (!isEmpty()) last else null
 }
 
 /**

@@ -238,55 +238,75 @@ public infix fun UShort.downTo(to: UShort): UIntProgression {
 }
 
 /**
- * Returns the first element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use first property instead", ReplaceWith("first"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun UIntProgression.first(): UInt {
-    return (this as Iterable<UInt>).first()
+    return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the first element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use first property instead", ReplaceWith("first"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun ULongProgression.first(): ULong {
-    return (this as Iterable<ULong>).first()
+    return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the last element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the first element, or `null` if the progression is empty.
  */
-@Deprecated("Use last property instead", ReplaceWith("last"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun UIntProgression.firstOrNull(): UInt? {
+    return if (!isEmpty()) first else null
+}
+
+/**
+ * Returns the first element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun ULongProgression.firstOrNull(): ULong? {
+    return if (!isEmpty()) first else null
+}
+
+/**
+ * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
+ */
 @SinceKotlin("1.7.0")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun UIntProgression.last(): UInt {
-    return (this as Iterable<UInt>).last()
+    return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
 }
 
 /**
- * Returns the last element.
- * 
- * @throws NoSuchElementException if the collection is empty.
+ * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@Deprecated("Use last property instead", ReplaceWith("last"))
-@DeprecatedSinceKotlin(warningSince = "1.7.0")
 @SinceKotlin("1.7.0")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun ULongProgression.last(): ULong {
-    return (this as Iterable<ULong>).last()
+    return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
+}
+
+/**
+ * Returns the last element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun UIntProgression.lastOrNull(): UInt? {
+    return if (!isEmpty()) last else null
+}
+
+/**
+ * Returns the last element, or `null` if the progression is empty.
+ */
+@SinceKotlin("1.7.0")
+@WasExperimental(ExperimentalUnsignedTypes::class)
+public fun ULongProgression.lastOrNull(): ULong? {
+    return if (!isEmpty()) last else null
 }
 
 /**
