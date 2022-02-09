@@ -6,7 +6,6 @@
 package kotlin.text
 
 import kotlin.js.RegExp
-import kotlin.js.RegExpMatch
 
 /**
  * Provides enumeration values to use to set regular expression options.
@@ -168,7 +167,7 @@ public actual class Regex actual constructor(pattern: String, options: Set<Regex
         if (!replacement.contains('\\') && !replacement.contains('$')) {
             return input.toString().nativeReplace(nativePattern, replacement)
         }
-        return replace(input) { substituteGroupRefs(it.asDynamic().nativeMatch, replacement) }
+        return replace(input) { substituteGroupRefs(it, replacement) }
     }
 
     /**
@@ -226,7 +225,7 @@ public actual class Regex actual constructor(pattern: String, options: Set<Regex
 
         return buildString {
             append(input.substring(0, match.range.first))
-            append(substituteGroupRefs(match.asDynamic().nativeMatch, replacement))
+            append(substituteGroupRefs(match, replacement))
             append(input.substring(match.range.last + 1, input.length))
         }
     }
@@ -331,17 +330,33 @@ private fun RegExp.findNext(input: String, from: Int, nextPattern: RegExp): Matc
     val range = match.index..lastIndex - 1
 
     return object : MatchResult {
-        @JsName("nativeMatch")
-        val nativeMatch: RegExpMatch = match
-
         override val range: IntRange = range
         override val value: String
             get() = match[0]!!
 
-        override val groups: MatchGroupCollection = object : MatchGroupCollection, AbstractCollection<MatchGroup?>() {
+        override val groups: MatchGroupCollection = object : MatchNamedGroupCollection, AbstractCollection<MatchGroup?>() {
             override val size: Int get() = match.length
             override fun iterator(): Iterator<MatchGroup?> = indices.asSequence().map { this[it] }.iterator()
             override fun get(index: Int): MatchGroup? = match[index]?.let { MatchGroup(it) }
+
+            override fun get(name: String): MatchGroup? {
+                // An object of named capturing groups whose keys are the names and values are the capturing groups
+                // or undefined if no named capturing groups were defined.
+                val groups = match.asDynamic().groups
+                    ?: throw IllegalArgumentException("Capturing group with name {$name} does not exist. No named capturing group was defined in Regex")
+
+                // If the match was successful but the group specified failed to match any part of the input sequence,
+                // the associated value is 'undefined'. Value for a non-existent key is also 'undefined'. Thus, explicitly check if the key exists.
+                if (!hasOwnPrototypeProperty(groups, name))
+                    throw IllegalArgumentException("Capturing group with name {$name} does not exist")
+
+                val value = groups[name]
+                return if (value == undefined) null else MatchGroup(value as String)
+            }
+        }
+
+        private fun hasOwnPrototypeProperty(o: Any?, name: String): Boolean {
+            return js("Object").prototype.hasOwnProperty.call(o, name).unsafeCast<Boolean>()
         }
 
 
@@ -377,7 +392,7 @@ private fun RegExp.findNext(input: String, from: Int, nextPattern: RegExp): Matc
 }
 
 // The same code from K/N Regex.kt
-private fun substituteGroupRefs(match: RegExpMatch, replacement: String): String {
+private fun substituteGroupRefs(match: MatchResult, replacement: String): String {
     var index = 0
     val result = StringBuilder()
 
@@ -404,24 +419,22 @@ private fun substituteGroupRefs(match: RegExpMatch, replacement: String): String
                 if (endIndex == replacement.length || replacement[endIndex] != '}')
                     throw IllegalArgumentException("Named capturing group reference is missing trailing '}'")
 
-                val namedGroups = match.asDynamic().groups
-                    ?: throw IllegalArgumentException("No named capturing group was defined but group with name {$groupName} was referenced")
-                val groupValue = namedGroups[groupName]
-                    ?: throw IllegalArgumentException("Capturing group with name {$groupName} does not exist")
+                val groups = match.groups as MatchNamedGroupCollection
 
-                result.append(groupValue as String)
+                result.append(groups[groupName]?.value ?: "")
                 index = endIndex + 1    // skip past '}'
             } else {
                 if (replacement[index] !in '0'..'9')
                     throw IllegalArgumentException("Invalid capturing group reference")
 
-                val endIndex = replacement.readGroupIndex(index, match.length)
+                val groups = match.groups
+                val endIndex = replacement.readGroupIndex(index, groups.size)
                 val groupIndex = replacement.substring(index, endIndex).toInt()
 
-                if (groupIndex >= match.length)
+                if (groupIndex >= groups.size)
                     throw IndexOutOfBoundsException("Group with index $groupIndex does not exist")
 
-                result.append(match[groupIndex])
+                result.append(groups[groupIndex]?.value ?: "")
                 index = endIndex
             }
         } else {
