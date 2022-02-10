@@ -156,20 +156,19 @@ class RegexTest {
     }
 
     @Test fun matchNamedGroups() {
+        if (!supportsNamedCapturingGroup) return
+
         val regex = "\\b(?<city>[A-Za-z\\s]+),\\s(?<state>[A-Z]{2}):\\s(?<areaCode>[0-9]{3})\\b".toRegex()
         val input = "Coordinates: Austin, TX: 123"
 
-        regex.find(input)!!.let { match ->
-            assertEquals(listOf("Austin, TX: 123", "Austin", "TX", "123"), match.groupValues)
+        val match = regex.find(input)!!
+        assertEquals(listOf("Austin, TX: 123", "Austin", "TX", "123"), match.groupValues)
 
-            if (supportsNamedCapturingGroup) {
-                val namedGroups = match.groups as MatchNamedGroupCollection
-                assertEquals(4, namedGroups.size)
-                assertEquals("Austin", namedGroups["city"]?.value)
-                assertEquals("TX", namedGroups["state"]?.value)
-                assertEquals("123", namedGroups["areaCode"]?.value)
-            }
-        }
+        val namedGroups = match.groups as MatchNamedGroupCollection
+        assertEquals(4, namedGroups.size)
+        assertEquals("Austin", namedGroups["city"]?.value)
+        assertEquals("TX", namedGroups["state"]?.value)
+        assertEquals("123", namedGroups["areaCode"]?.value)
     }
 
     @Test fun matchOptionalNamedGroup() {
@@ -208,6 +207,18 @@ class RegexTest {
     }
 
     @Test fun matchWithBackReference() {
+        val regex = "(\\w+), yes \\1".toRegex()
+
+        val match = regex.find("Do you copy? Sir, yes Sir!")!!
+        assertEquals("Sir, yes Sir", match.value)
+        assertEquals("Sir", match.groups[1]?.value)
+
+        assertNull(regex.find("Do you copy? Sir, yes I do!"))
+    }
+
+    @Test fun matchNamedGroupsWithBackReference() {
+        if (!supportsNamedCapturingGroup) return
+
         val regex = "(?<title>\\w+), yes \\k<title>".toRegex()
 
         val match = regex.find("Do you copy? Sir, yes Sir!")!!
