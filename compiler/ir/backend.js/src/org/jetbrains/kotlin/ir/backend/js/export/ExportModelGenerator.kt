@@ -16,16 +16,14 @@ import org.jetbrains.kotlin.ir.backend.js.JsIrBackendContext
 import org.jetbrains.kotlin.ir.backend.js.JsLoweredDeclarationOrigin
 import org.jetbrains.kotlin.ir.backend.js.lower.ES6AddInternalParametersToConstructorPhase.ES6_INIT_BOX_PARAMETER
 import org.jetbrains.kotlin.ir.backend.js.lower.ES6AddInternalParametersToConstructorPhase.ES6_RESULT_TYPE_PARAMETER
-import org.jetbrains.kotlin.ir.backend.js.utils.getJsNameOrKotlinName
-import org.jetbrains.kotlin.ir.backend.js.utils.isExportedInterface
-import org.jetbrains.kotlin.ir.backend.js.utils.isJsExport
-import org.jetbrains.kotlin.ir.backend.js.utils.sanitizeName
+import org.jetbrains.kotlin.ir.backend.js.utils.*
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrClassifierSymbol
 import org.jetbrains.kotlin.ir.symbols.IrTypeParameterSymbol
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.serialization.js.ModuleKind
 import org.jetbrains.kotlin.utils.addIfNotNull
 import org.jetbrains.kotlin.utils.keysToMap
@@ -34,6 +32,7 @@ class ExportModelGenerator(
     val context: JsIrBackendContext,
     val generateNamespacesForPackages: Boolean
 ) {
+    private val JsPackage = FqName("kotlin.js")
 
     fun generateExport(file: IrPackageFragment): List<ExportedDeclaration> {
         val namespaceFqName = file.fqName
@@ -507,8 +506,8 @@ class ExportModelGenerator(
 
             classifier is IrClassSymbol -> {
                 val klass = classifier.owner
-                val isImplicitlyExported = !klass.isExported(context)
-                val name = if (generateNamespacesForPackages) klass.fqNameWhenAvailable!!.asString() else klass.name.asString()
+                val isImplicitlyExported = !klass.isExported(context) && !klass.isExternal
+                val name = klass.getExportableName()
 
                 when (klass.kind) {
                     ClassKind.ANNOTATION_CLASS,
@@ -532,6 +531,19 @@ class ExportModelGenerator(
         }
 
         return exportedType.withNullability(isNullable)
+    }
+
+    private fun IrClass.getExportableName(): String {
+        val qualifier = when (val p = parent) {
+            is IrFile -> p.getJsQualifier()
+            is IrClass -> p.getExportableName()
+            else -> null
+        }
+        return when {
+            isExternal && qualifier != null -> "$qualifier.$name"
+            generateNamespacesForPackages && !isExternal -> fqNameWhenAvailable!!.asString()
+            else -> name.asString()
+        }
     }
 
     private fun IrDeclarationWithName.getExportedIdentifier(): String =
