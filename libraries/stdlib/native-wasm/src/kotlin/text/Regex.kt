@@ -388,25 +388,54 @@ private fun substituteGroupRefs(match: MatchResult, replacement: String): String
             if (index == replacement.length)
                 throw IllegalArgumentException("Capturing group index is missing")
 
-            if (replacement[index] == '{')
-                throw IllegalArgumentException("Named capturing group reference currently is not supported")
+            if (replacement[index] == '{') {
+                val endIndex = replacement.readGroupName(++index)
+                val groupName = replacement.substring(index, endIndex)
 
-            if (replacement[index] !in '0'..'9')
-                throw IllegalArgumentException("Invalid capturing group reference")
+                if (groupName.isEmpty())
+                    throw IllegalArgumentException("Named capturing group reference should have a non-empty name")
+                if (groupName[0] in '0'..'9')
+                    throw IllegalArgumentException("Named capturing group reference {$groupName} should start with a letter")
 
-            val endIndex = replacement.readGroupIndex(index, match.groupValues.size)
-            val groupIndex = replacement.substring(index, endIndex).toInt()
+                if (endIndex == replacement.length || replacement[endIndex] != '}')
+                    throw IllegalArgumentException("Named capturing group reference is missing trailing '}'")
 
-            if (groupIndex >= match.groupValues.size)
-                throw IndexOutOfBoundsException("Group with index $groupIndex does not exist")
+                val groups = match.groups as MatchNamedGroupCollection
 
-            result.append(match.groupValues[groupIndex])
-            index = endIndex
+                result.append(groups[groupName]?.value ?: "")
+                index = endIndex + 1    // skip past '}'
+            } else {
+                if (replacement[index] !in '0'..'9')
+                    throw IllegalArgumentException("Invalid capturing group reference")
+
+                val groups = match.groups
+                val endIndex = replacement.readGroupIndex(index, groups.size)
+                val groupIndex = replacement.substring(index, endIndex).toInt()
+
+                if (groupIndex >= groups.size)
+                    throw IndexOutOfBoundsException("Group with index $groupIndex does not exist")
+
+                result.append(groups[groupIndex]?.value ?: "")
+                index = endIndex
+            }
         } else {
             result.append(char)
         }
     }
     return result.toString()
+}
+
+private fun String.readGroupName(startIndex: Int): Int {
+    var index = startIndex
+    while (index < length) {
+        val char = this[index]
+        if (char in 'a'..'z' || char in 'A'..'Z' || char in '0'..'9') {
+            index++
+        } else {
+            break
+        }
+    }
+    return index
 }
 
 private fun String.readGroupIndex(startIndex: Int, groupCount: Int): Int {
