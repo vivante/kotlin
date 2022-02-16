@@ -534,14 +534,13 @@ class ExportModelGenerator(
     }
 
     private fun IrClass.getExportableName(): String {
-        val qualifier = when (val p = parent) {
-            is IrFile -> p.getJsQualifier()
-            is IrClass -> p.getExportableName()
-            else -> null
-        }
+        val qualifier = (parent as? IrFile)?.getJsQualifier()
+        val supQualifier = (parent as? IrClass)?.getExportableName()
+
         return when {
-            isExternal && qualifier != null -> "$qualifier.$name"
-            generateNamespacesForPackages && !isExternal -> fqNameWhenAvailable!!.asString()
+            qualifier != null -> "$qualifier.$name"
+            isExternal && !isExported(context) -> "${supQualifier?.plus(".") ?: ""}$name"
+            generateNamespacesForPackages -> fqNameWhenAvailable!!.asString()
             else -> name.asString()
         }
     }
