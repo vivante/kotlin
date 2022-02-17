@@ -1,0 +1,38 @@
+// !LANGUAGE: +ContextReceivers
+// TARGET_BACKEND: JVM_IR
+// IGNORE_BACKEND_FIR: JVM_IR
+// FIR status: context receivers aren't yet supported
+
+// KT-51271
+
+class Context {
+    fun c() = 1
+}
+
+context(Context)
+inline fun testInline() = c()
+
+context(Context)
+inline fun testInlineWithArg(i: Int) = i + c()
+
+context(Context)
+inline fun Int.testInlineWithExtensionAndArg(i: Int) = this@Int + i + c()
+
+context(Context)
+inline fun Int.testInlineWithExtensionAndMultipleArgs(i1: Int, i2: Int) = this@Int + i1 + i2 + c()
+
+context(Context, Any)
+inline fun Int.testInlineWithExtensionAndMultipleContextsAndArgs(i1: Int, i2: Int) =
+    this@Int + i1 + i2 + c() + if (this@Any == null) 0 else 1
+
+fun box(): String = with(Context()) {
+    var result = 0
+    result += testInline()
+    result += testInlineWithArg(1)
+    result += 1.testInlineWithExtensionAndArg(1)
+    result += 1.testInlineWithExtensionAndMultipleArgs(1, 2)
+    with(1) {
+        result += 1.testInlineWithExtensionAndMultipleContextsAndArgs(1, 2)
+    }
+    return if (result == 17) "OK" else "fail"
+}
