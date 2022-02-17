@@ -21,3 +21,19 @@ public expect val supportsSuppressedExceptions: Boolean
 public expect val supportsNamedCapturingGroup: Boolean
 
 public expect val regexSplitUnicodeCodePointHandling: Boolean
+
+public enum class HandlingOption {
+    MATCH_NOTHING, THROW, IGNORE
+}
+
+public expect class BackReferenceHandling {
+    companion object {
+        val captureLargestValidIndex: Boolean
+
+        val notYetDefinedGroup: HandlingOption
+        val notYetDefinedNamedGroup: HandlingOption
+        val enclosingGroup: HandlingOption
+        val nonExistentGroup: HandlingOption
+        val nonExistentNamedGroup: HandlingOption
+    }
+}
