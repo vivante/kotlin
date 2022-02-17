@@ -66,6 +66,23 @@ public actual enum class RegexOption(override val value: Int, override val mask:
  */
 public actual data class MatchGroup(actual val value: String, val range: IntRange)
 
+
+/**
+ * Returns a named group with the specified [name].
+ *
+ * @return An instance of [MatchGroup] if the group with the specified [name] was matched or `null` otherwise.
+ * @throws IllegalArgumentException if there is no group with the specified [name] defined in the regex pattern.
+ * @throws UnsupportedOperationException if getting named groups isn't supported on the current platform.
+ */
+@SinceKotlin("1.7")
+public operator fun MatchGroupCollection.get(name: String): MatchGroup? {
+    val namedGroups = this as? MatchNamedGroupCollection
+        ?: throw UnsupportedOperationException("Retrieving groups by name is not supported on this platform.")
+
+    return namedGroups[name]
+}
+
+
 /**
  * Represents a compiled regular expression.
  * Provides functions to match strings in text with a pattern, replace the found occurrences and split text around matches.
@@ -400,9 +417,7 @@ private fun substituteGroupRefs(match: MatchResult, replacement: String): String
                 if (endIndex == replacement.length || replacement[endIndex] != '}')
                     throw IllegalArgumentException("Named capturing group reference is missing trailing '}'")
 
-                val groups = match.groups as MatchNamedGroupCollection
-
-                result.append(groups[groupName]?.value ?: "")
+                result.append(match.groups[groupName]?.value ?: "")
                 index = endIndex + 1    // skip past '}'
             } else {
                 if (replacement[index] !in '0'..'9')
