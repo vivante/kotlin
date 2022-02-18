@@ -19,7 +19,7 @@ context(Context)
 inline fun Int.testInlineWithExtensionAndMultipleArgs(i1: Int, i2: Int) = this@Int + i1 + i2 + c()
 
 context(Context, Any)
-inline fun Int.testInlineWithExtensionAndMultipleContextsAndArgs(i1: Int, i2: Int) =
+inline fun Int.testInlineWithExtensionAndMultipleContextsAndArgs(i1: Int = 1, i2: Int = 2) =
     this@Int + i1 + i2 + c() + if (this@Any == null) 0 else 1
 
 fun box(): String = with(Context()) {
@@ -30,6 +30,7 @@ fun box(): String = with(Context()) {
     result += 1.testInlineWithExtensionAndMultipleArgs(1, 2)
     with(1) {
         result += 1.testInlineWithExtensionAndMultipleContextsAndArgs(1, 2)
+        result += 1.testInlineWithExtensionAndMultipleContextsAndArgs()
     }
-    return if (result == 17) "OK" else "fail"
+    return if (result == 23) "OK" else "fail"
 }
