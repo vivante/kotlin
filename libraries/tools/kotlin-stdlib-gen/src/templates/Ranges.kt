@@ -235,7 +235,7 @@ object RangeOps : TemplateGroupBase() {
             include(ProgressionsOfPrimitives, rangePrimitives)
         } builder {
             returns("$primitive${"?".ifOrEmpty(nullable)}")
-            since("1.7.0")
+            since("1.7")
 
             doc {
                 val onEmpty = if (nullable) "`null`" else "throws [NoSuchElementException]"

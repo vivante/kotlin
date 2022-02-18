@@ -240,7 +240,7 @@ public infix fun UShort.downTo(to: UShort): UIntProgression {
 /**
  * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun UIntProgression.first(): UInt {
     return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
@@ -249,7 +249,7 @@ public fun UIntProgression.first(): UInt {
 /**
  * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun ULongProgression.first(): ULong {
     return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
@@ -258,7 +258,7 @@ public fun ULongProgression.first(): ULong {
 /**
  * Returns the first element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun UIntProgression.firstOrNull(): UInt? {
     return if (!isEmpty()) first else null
@@ -267,7 +267,7 @@ public fun UIntProgression.firstOrNull(): UInt? {
 /**
  * Returns the first element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun ULongProgression.firstOrNull(): ULong? {
     return if (!isEmpty()) first else null
@@ -276,7 +276,7 @@ public fun ULongProgression.firstOrNull(): ULong? {
 /**
  * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun UIntProgression.last(): UInt {
     return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
@@ -285,7 +285,7 @@ public fun UIntProgression.last(): UInt {
 /**
  * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun ULongProgression.last(): ULong {
     return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
@@ -294,7 +294,7 @@ public fun ULongProgression.last(): ULong {
 /**
  * Returns the last element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun UIntProgression.lastOrNull(): UInt? {
     return if (!isEmpty()) last else null
@@ -303,7 +303,7 @@ public fun UIntProgression.lastOrNull(): UInt? {
 /**
  * Returns the last element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 @WasExperimental(ExperimentalUnsignedTypes::class)
 public fun ULongProgression.lastOrNull(): ULong? {
     return if (!isEmpty()) last else null

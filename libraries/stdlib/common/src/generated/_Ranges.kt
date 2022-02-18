@@ -631,7 +631,7 @@ public infix fun Short.downTo(to: Short): IntProgression {
 /**
  * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun IntProgression.first(): Int {
     return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
@@ -639,7 +639,7 @@ public fun IntProgression.first(): Int {
 /**
  * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun LongProgression.first(): Long {
     return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
@@ -647,7 +647,7 @@ public fun LongProgression.first(): Long {
 /**
  * Returns the first element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun CharProgression.first(): Char {
     return if (!isEmpty()) first else throw NoSuchElementException("Progression is empty.")
 }
@@ -655,7 +655,7 @@ public fun CharProgression.first(): Char {
 /**
  * Returns the first element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun IntProgression.firstOrNull(): Int? {
     return if (!isEmpty()) first else null
 }
@@ -663,7 +663,7 @@ public fun IntProgression.firstOrNull(): Int? {
 /**
  * Returns the first element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun LongProgression.firstOrNull(): Long? {
     return if (!isEmpty()) first else null
 }
@@ -671,7 +671,7 @@ public fun LongProgression.firstOrNull(): Long? {
 /**
  * Returns the first element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun CharProgression.firstOrNull(): Char? {
     return if (!isEmpty()) first else null
 }
@@ -679,7 +679,7 @@ public fun CharProgression.firstOrNull(): Char? {
 /**
  * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun IntProgression.last(): Int {
     return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
 }
@@ -687,7 +687,7 @@ public fun IntProgression.last(): Int {
 /**
  * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun LongProgression.last(): Long {
     return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
 }
@@ -695,7 +695,7 @@ public fun LongProgression.last(): Long {
 /**
  * Returns the last element, or throws [NoSuchElementException] if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun CharProgression.last(): Char {
     return if (!isEmpty()) last else throw NoSuchElementException("Progression is empty.")
 }
@@ -703,7 +703,7 @@ public fun CharProgression.last(): Char {
 /**
  * Returns the last element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun IntProgression.lastOrNull(): Int? {
     return if (!isEmpty()) last else null
 }
@@ -711,7 +711,7 @@ public fun IntProgression.lastOrNull(): Int? {
 /**
  * Returns the last element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun LongProgression.lastOrNull(): Long? {
     return if (!isEmpty()) last else null
 }
@@ -719,7 +719,7 @@ public fun LongProgression.lastOrNull(): Long? {
 /**
  * Returns the last element, or `null` if the progression is empty.
  */
-@SinceKotlin("1.7.0")
+@SinceKotlin("1.7")
 public fun CharProgression.lastOrNull(): Char? {
     return if (!isEmpty()) last else null
 }
