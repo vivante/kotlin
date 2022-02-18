@@ -7,7 +7,7 @@
 #define RUNTIME_MM_EXTRA_OBJECT_DATA_REGISTRY_H
 
 #include "Memory.h"
-#include "MultiSourceQueue.hpp"
+#include "MultiSourceQueueObjects.hpp"
 #include "ThreadRegistry.hpp"
 #include "ExtraObjectData.hpp"
 
@@ -17,7 +17,7 @@ namespace mm {
 // Registry for extra data, attached to some kotlin objects: weak refs, associated objects, ...
 class ExtraObjectDataFactory : Pinned {
     using Mutex = SpinLock<MutexThreadStateHandling::kIgnore>;
-    using Queue = MultiSourceQueue<mm::ExtraObjectData, Mutex>;
+    using Queue = MultiSourceQueueObjects<mm::ExtraObjectData, Mutex>;
 public:
     class ThreadQueue : public Queue::Producer {
     public:

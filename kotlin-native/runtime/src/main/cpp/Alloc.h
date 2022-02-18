@@ -131,6 +131,67 @@ bool operator!=(
     return !(x == y);
 }
 
+template <class T> class KonanAllocatorObjects {
+ public:
+  typedef size_t size_type;
+  typedef ptrdiff_t difference_type;
+  typedef T* pointer;
+  typedef const T* const_pointer;
+  typedef T& reference;
+  typedef const T& const_reference;
+  typedef T value_type;
+
+  KonanAllocatorObjects() {}
+  KonanAllocatorObjects(const KonanAllocatorObjects&) {}
+
+  pointer allocate(size_type n, const void * = 0) {
+    return reinterpret_cast<T*>(konanAllocObject(n * sizeof(T)));
+  }
+
+  void deallocate(void* p, size_type) {
+    if (p != nullptr) konanFreeObject(p);
+  }
+
+  pointer address(reference x) const { return &x; }
+
+  const_pointer address(const_reference x) const { return &x; }
+
+  KonanAllocatorObjects<T>&  operator=(const KonanAllocatorObjects&) { return *this; }
+
+  void construct(pointer p, const T& val) { new ((T*) p) T(val); }
+
+  // C++-11 wants that.
+  template <class U, class ...A>
+  void construct(U* const p, A&& ...args) {
+    new (p) U(::std::forward<A>(args)...);
+  }
+
+  void destroy(pointer p) { p->~T(); }
+
+  size_type max_size() const { return size_t(-1); }
+
+  template <class U>
+  struct rebind { typedef KonanAllocatorObjects<U> other; };
+
+  template <class U>
+  KonanAllocatorObjects(const KonanAllocatorObjects<U>&) {}
+
+  template <class U>
+  KonanAllocatorObjects& operator=(const KonanAllocatorObjects<U>&) { return *this; }
+};
+
+template <class T, class U>
+bool operator==(
+  KonanAllocatorObjects<T> const&, KonanAllocatorObjects<U> const&) noexcept {
+    return true;
+}
+
+template <class T, class U>
+bool operator!=(
+  KonanAllocatorObjects<T> const& x, KonanAllocatorObjects<U> const& y) noexcept {
+    return !(x == y);
+}
+
 template <class T>
 class KonanDeleter {
 public:
@@ -173,6 +234,32 @@ protected:
     // Not virtual by design. Since this class hides this destructor, no one can destroy an
     // instance of `KonanAllocatorAware` directly, so this destructor is never called in a virtual manner.
     ~KonanAllocatorAware() = default;
+};
+
+class KonanAllocatorAwareObjects {
+public:
+    static void* operator new(size_t count) noexcept { return konanAllocObject(count); }
+    static void* operator new[](size_t count) noexcept { return konanAllocObject(count); }
+
+    static void* operator new(size_t count, void* ptr) noexcept { return ptr; }
+    static void* operator new[](size_t count, void* ptr) noexcept { return ptr; }
+
+    static void operator delete(void* ptr) noexcept { konanFreeObject(ptr); }
+    static void operator delete[](void* ptr) noexcept { konanFreeObject(ptr); }
+
+protected:
+    // Hide constructors, assignments and destructor to discourage operating on instance of `KonanAllocatorAwareObjects`
+    KonanAllocatorAwareObjects() = default;
+
+    KonanAllocatorAwareObjects(const KonanAllocatorAwareObjects&) = default;
+    KonanAllocatorAwareObjects(KonanAllocatorAwareObjects&&) = default;
+
+    KonanAllocatorAwareObjects& operator=(const KonanAllocatorAwareObjects&) = default;
+    KonanAllocatorAwareObjects& operator=(KonanAllocatorAwareObjects&&) = default;
+
+    // Not virtual by design. Since this class hides this destructor, no one can destroy an
+    // instance of `KonanAllocatorAwareObjects` directly, so this destructor is never called in a virtual manner.
+    ~KonanAllocatorAwareObjects() = default;
 };
 
 #endif // RUNTIME_ALLOC_H
