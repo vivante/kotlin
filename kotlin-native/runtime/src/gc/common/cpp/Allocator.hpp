@@ -12,8 +12,8 @@ namespace gc {
 
 class AlignedAllocator {
 public:
-    void* Alloc(size_t size, size_t alignment) noexcept { return konanAllocAlignedMemory(size, alignment); }
-    static void Free(void* instance) noexcept { konanFreeMemory(instance); }
+    void* Alloc(size_t size, size_t alignment) noexcept { return konanAllocAlignedObject(size, alignment); }
+    static void Free(void* instance) noexcept { konanFreeObject(instance); }
 };
 
 template <typename BaseAllocator, typename GCThreadData>

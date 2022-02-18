@@ -19,5 +19,18 @@ void* konan_calloc_aligned_impl(size_t count, size_t size, size_t alignment) {
 void konan_free_impl (void* mem) {
   free(mem);
 }
+
+void* object_konan_calloc_impl(size_t n_elements, size_t elem_size) {
+  return calloc(n_elements, elem_size);
+}
+
+void* object_konan_calloc_aligned_impl(size_t count, size_t size, size_t alignment) {
+  // alignment is not supported by std alloc - use mimalloc
+  return calloc(count, size);
+}
+
+void object_konan_free_impl (void* mem) {
+  free(mem);
+}
 }
 

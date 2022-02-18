@@ -84,6 +84,11 @@ void* calloc(size_t count, size_t size);
 void* calloc_aligned(size_t count, size_t size, size_t alignment);
 void free(void* ptr);
 
+// Memory operations on objects.
+void* object_calloc(size_t count, size_t size);
+void* object_calloc_aligned(size_t count, size_t size, size_t alignment);
+void object_free(void* ptr);
+
 // Time operations.
 uint64_t getTimeMillis();
 uint64_t getTimeMicros();

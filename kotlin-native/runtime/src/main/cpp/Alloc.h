@@ -37,6 +37,18 @@ inline void konanFreeMemory(void* memory) {
   konan::free(memory);
 }
 
+inline void* konanAllocObject(size_t size) {
+  return konan::object_calloc(1, size);
+}
+
+inline void* konanAllocAlignedObject(size_t size, size_t alignment) {
+    return konan::object_calloc_aligned(1, size, alignment);
+}
+
+inline void konanFreeObject(void* memory) {
+  konan::object_free(memory);
+}
+
 template<typename T>
 inline T* konanAllocArray(size_t length) {
   return reinterpret_cast<T*>(konanAllocMemory(length * sizeof(T)));
