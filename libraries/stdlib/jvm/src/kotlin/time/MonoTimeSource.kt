@@ -10,15 +10,52 @@ import kotlin.time.Duration.Companion.nanoseconds
 @SinceKotlin("1.3")
 @ExperimentalTime
 internal actual object MonotonicTimeSource : TimeSource {
-    private fun read(): Long = System.nanoTime()
+    private val zero: Long = System.nanoTime()
+    private fun read(): Long = System.nanoTime() - zero
     override fun toString(): String = "TimeSource(System.nanoTime())"
 
     actual override fun markNow(): DefaultTimeMark = DefaultTimeMark(read())
-    actual fun elapsedFrom(timeMark: DefaultTimeMark): Duration = (read() - timeMark.reading).nanoseconds
+    actual fun elapsedFrom(timeMark: DefaultTimeMark): Duration =
+        saturatingDiff(read(), timeMark.reading)
 
     // may have questionable contract
     actual fun adjustReading(timeMark: DefaultTimeMark, duration: Duration): DefaultTimeMark =
-        DefaultTimeMark(timeMark.reading + duration.inWholeNanoseconds)
+        DefaultTimeMark(saturatingAdd(timeMark.reading, duration))
+}
+
+private fun saturatingAdd(longNs: Long, duration: Duration): Long {
+    val durationNs = duration.inWholeNanoseconds
+    if (longNs == Long.MIN_VALUE || longNs == Long.MAX_VALUE) {
+        if (duration.isInfinite() && (longNs xor durationNs < 0)) throw IllegalArgumentException("Summing infinities of different signs")
+        return longNs
+    }
+    if (durationNs == Long.MAX_VALUE || durationNs == Long.MIN_VALUE) {
+        // TODO: check precision losses
+        return (longNs + duration.toDouble(DurationUnit.NANOSECONDS)).toLong()
+    }
+
+    val result = longNs + durationNs
+    if (((longNs xor result) and (durationNs xor result)) < 0) {
+        return if (longNs < 0) Long.MIN_VALUE else Long.MAX_VALUE
+    }
+    return result
+}
+
+private fun saturatingDiff(valueNs: Long, originNs: Long): Duration {
+    if (originNs == Long.MIN_VALUE || originNs == Long.MAX_VALUE) {
+        return -(originNs.toDuration(DurationUnit.DAYS)) // saturate to infinity
+    }
+    val result = valueNs - originNs
+    if ((result xor valueNs) and (result xor originNs).inv() < 0) {
+        // TODO: do not saturate but calculate with reduced precision
+        return if (valueNs < 0) -Duration.INFINITE else Duration.INFINITE
+    }
+    return result.nanoseconds
+    // r x v   r x o  ow
+    // 0       0      0
+    // 1       1      0
+    // 1       0      1
+    // 1       1      0
 }
 
 

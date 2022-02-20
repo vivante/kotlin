@@ -60,6 +60,23 @@ class TimeMarkTest {
     }
 
     @Test
+    fun adjustmentInfinite() {
+        val timeSource = TestTimeSource()
+        val mark = timeSource.markNow()
+        val infiniteFutureMark = mark + Duration.INFINITE
+        val infinitePastMark = mark - Duration.INFINITE
+
+        assertEquals(-Duration.INFINITE, infiniteFutureMark.elapsedNow())
+        assertTrue(infiniteFutureMark.hasNotPassedNow())
+
+        assertEquals(Duration.INFINITE, infinitePastMark.elapsedNow())
+        assertTrue(infinitePastMark.hasPassedNow())
+
+        assertFailsWith<IllegalArgumentException> { infiniteFutureMark - Duration.INFINITE }
+        assertFailsWith<IllegalArgumentException> { infinitePastMark + Duration.INFINITE }
+    }
+
+    @Test
     fun defaultTimeMarkAdjustment() {
         val baseMark = TimeSource.Monotonic.markNow()
 
@@ -76,5 +93,21 @@ class TimeMarkTest {
         val elapsedBefore = markBefore.elapsedNow()
         assertTrue(elapsedBefore >= elapsedBase + 200.microseconds)
         assertTrue(elapsedAfter <= elapsedBase - 100.microseconds)
+    }
+
+    @Test
+    fun defaultTimeMarkAdjustmentInfinite() {
+        val baseMark = TimeSource.Monotonic.markNow()
+        val infiniteFutureMark = baseMark + Duration.INFINITE
+        val infinitePastMark = baseMark - Duration.INFINITE
+
+        assertEquals(-Duration.INFINITE, infiniteFutureMark.elapsedNow())
+        assertTrue(infiniteFutureMark.hasNotPassedNow())
+
+        assertEquals(Duration.INFINITE, infinitePastMark.elapsedNow())
+        assertTrue(infinitePastMark.hasPassedNow())
+
+        assertFailsWith<IllegalArgumentException> { infiniteFutureMark - Duration.INFINITE }
+        assertFailsWith<IllegalArgumentException> { infinitePastMark + Duration.INFINITE }
     }
 }
