@@ -30,7 +30,7 @@ sourcesJar()
 /* Setup Backwards Compatibility Test */
 run {
     /* When -Pkgp-idea-snapshot is set, then the test runs against a locally installed snapshot version (./gradlew install) */
-    val isSnapshotTest = project.providers.gradleProperty("kotlin-gradle-plugin-idea.snapshot").isPresent
+    val isSnapshotTest = project.providers.gradleProperty("kotlin-gradle-plugin-idea.snapshot").forUseAtConfigurationTime().isPresent
 
     repositories {
         if (isSnapshotTest) mavenLocal()
