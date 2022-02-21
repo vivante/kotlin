@@ -32,8 +32,6 @@ class ExportModelGenerator(
     val context: JsIrBackendContext,
     val generateNamespacesForPackages: Boolean
 ) {
-    private val JsPackage = FqName("kotlin.js")
-
     fun generateExport(file: IrPackageFragment): List<ExportedDeclaration> {
         val namespaceFqName = file.fqName
         val exports = file.declarations.flatMap { declaration -> listOfNotNull(exportDeclaration(declaration)) }
