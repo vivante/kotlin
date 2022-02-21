@@ -53,10 +53,12 @@ tasks.withType<KotlinCompile<*>>().configureEach {
         "-opt-in=kotlin.contracts.ExperimentalContracts"
     )
 
+    val relativePathBaseArg = "-Xklib-relative-path-base=$buildDir,$projectDir".takeIf { !kotlinBuildProperties.getBoolean("kotlin.build.use.absolute.paths.in.klib") }
+
     doFirst {
-        kotlinOptions.freeCompilerArgs += listOfNotNull(
-            "-Xklib-relative-path-base=$buildDir,$projectDir".takeIf { !kotlinBuildProperties.getBoolean("kotlin.build.use.absolute.paths.in.klib") }
-        )
+        if (relativePathBaseArg != null) {
+            kotlinOptions.freeCompilerArgs += relativePathBaseArg
+        }
     }
 }
 
