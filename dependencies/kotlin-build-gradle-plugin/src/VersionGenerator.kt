@@ -81,7 +81,7 @@ open class VersionGenerator : DefaultTask() {
     @Input
     open val buildNumber = project.findProperty("build.number")?.toString()
 
-    @Input
+    @get:Input
     open val meta = (project.findProperty("konanMetaVersion") as? String
         ?: kotlinNativeProperties["konanMetaVersion"])?.let { MetaVersion.findAppropriate(it.toString()) }
         ?: MetaVersion.DEV
