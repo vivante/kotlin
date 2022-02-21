@@ -13,8 +13,8 @@
 
 using namespace kotlin;
 
-KStdVector<ObjHeader*> kotlin::gc::collectRootSet() {
-    KStdVector<ObjHeader*> graySet;
+KStdVectorObjects<ObjHeader*> kotlin::gc::collectRootSet() {
+    KStdVectorObjects<ObjHeader*> graySet;
     for (auto& thread : mm::GlobalData::Instance().threadRegistry().LockForIter()) {
         // TODO: Maybe it's more efficient to do by the suspending thread?
         thread.Publish();

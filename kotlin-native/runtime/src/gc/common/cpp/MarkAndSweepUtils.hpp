@@ -28,7 +28,7 @@ struct MarkStats {
 
 // TODO: Because of `graySet` this implementation may allocate heap memory during GC.
 template <typename Traits>
-MarkStats Mark(KStdVector<ObjHeader*> graySet) noexcept {
+MarkStats Mark(KStdVectorObjects<ObjHeader*> graySet) noexcept {
     MarkStats stats;
     while (!graySet.empty()) {
         ObjHeader* top = graySet.back();
@@ -111,7 +111,7 @@ typename Traits::ObjectFactory::FinalizerQueue Sweep(typename Traits::ObjectFact
     return Sweep<Traits>(iter);
 }
 
-KStdVector<ObjHeader*> collectRootSet();
+KStdVectorObjects<ObjHeader*> collectRootSet();
 
 } // namespace gc
 } // namespace kotlin

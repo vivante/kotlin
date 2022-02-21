@@ -88,6 +88,8 @@ template <class Value>
 using KStdUniquePtr = std::unique_ptr<Value, KonanDeleter<Value>>;
 template<class Value>
 using KStdListObjects = std::list<Value, KonanAllocatorObjects<Value>>;
+template<class Value>
+using KStdVectorObjects = std::vector<Value, KonanAllocatorObjects<Value>>;
 
 template <typename T, typename... Args>
 KStdUniquePtr<T> make_unique(Args&&... args) noexcept {
