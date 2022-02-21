@@ -14,7 +14,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-build-gradle-plugin:0.0.35-local-test")
+        classpath("org.jetbrains.kotlin:kotlin-build-gradle-plugin:${extra["kotlin.build.gradlePlugin.version"]}")
     }
 }
 
