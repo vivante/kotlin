@@ -229,29 +229,4 @@ object RangeOps : TemplateGroupBase() {
             "return if (this in $toType.MIN_VALUE.to$fromType()..$toType.MAX_VALUE.to$fromType()) this.$conversion() else null"
         }
     }
-
-    val f_firstLast = sequence {
-        fun def(op: String, nullable: Boolean) = fn("$op${"OrNull".ifOrEmpty(nullable)}()") {
-            include(ProgressionsOfPrimitives, rangePrimitives)
-        } builder {
-            returns("$primitive${"?".ifOrEmpty(nullable)}")
-            since("1.7")
-
-            doc {
-                val onEmpty = if (nullable) "`null`" else "throws [NoSuchElementException]"
-                "Returns the $op ${f.element}, or $onEmpty if the ${f.collection} is empty."
-            }
-
-            body {
-                val onEmpty = if (nullable) "null" else "throw NoSuchElementException(\"Progression is empty.\")"
-                "return if (!isEmpty()) $op else $onEmpty"
-            }
-        }
-
-        for (op in listOf("first", "last")) {
-            for (nullable in listOf(false, true)) {
-                yield(def(op, nullable))
-            }
-        }
-    }
 }
