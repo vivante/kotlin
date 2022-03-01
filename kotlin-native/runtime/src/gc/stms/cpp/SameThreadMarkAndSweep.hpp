@@ -10,6 +10,7 @@
 
 #include "Allocator.hpp"
 #include "GCScheduler.hpp"
+#include "IntrusiveList.hpp"
 #include "ObjectFactory.hpp"
 #include "Types.h"
 #include "Utils.hpp"
@@ -25,9 +26,6 @@ namespace gc {
 // Stop-the-world Mark-and-Sweep that runs on mutator threads. Can support targets that do not have threads.
 class SameThreadMarkAndSweep : private Pinned {
 public:
-    // This implementation of mark queue allocates memory during collection.
-    using MarkQueue = KStdVector<ObjHeader*>;
-
     enum class SafepointFlag {
         kNone,
         kNeedsSuspend,
@@ -45,7 +43,11 @@ public:
         Color color() const noexcept { return color_; }
         void setColor(Color color) noexcept { color_ = color; }
 
+        ObjHeader* next() const noexcept { return next_; }
+        void setNext(ObjHeader* next) noexcept { next_ = next; }
+
     private:
+        ObjHeader* next_ = nullptr;
         Color color_ = Color::kWhite;
     };
 
@@ -75,6 +77,28 @@ public:
     };
 
     using Allocator = ThreadData::Allocator;
+
+    using HeapObjHeader = mm::ObjectFactory<SameThreadMarkAndSweep>::HeapObjHeader;
+
+    struct ObjectTraits {
+        static HeapObjHeader* next(const HeapObjHeader& value) noexcept {
+            ObjHeader* next = value.gcData.next();
+            if (!next) {
+                return nullptr;
+            }
+            return mm::ObjectFactory<SameThreadMarkAndSweep>::NodeRef::From(next).AsHeapObjHeader();
+        }
+
+        static void setNext(HeapObjHeader& value, HeapObjHeader* next) noexcept {
+            if (next) {
+                value.gcData.setNext(&next->object);
+            } else {
+                value.gcData.setNext(nullptr);
+            }
+        }
+    };
+
+    using MarkQueue = intrusive_forward_list<HeapObjHeader, ObjectTraits>;
 
     SameThreadMarkAndSweep(mm::ObjectFactory<SameThreadMarkAndSweep>& objectFactory, GCScheduler& gcScheduler) noexcept;
     ~SameThreadMarkAndSweep() = default;
