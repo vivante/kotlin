@@ -96,7 +96,7 @@ internal fun transformBuildScriptWithPluginsDsl(buildScriptContent: String): Str
 
 /** Copies the logic of Gradle [`mavenLocal()`](https://docs.gradle.org/3.4.1/dsl/org.gradle.api.artifacts.dsl.RepositoryHandler.html#org.gradle.api.artifacts.dsl.RepositoryHandler:mavenLocal())
  */
-private object MavenLocalUrlProvider {
+object MavenLocalUrlProvider {
     /** The URL that points to the Gradle's mavenLocal() repository. */
     val mavenLocalUrl by lazy {
         val path = propertyMavenLocalRepoPath ?: homeSettingsLocalRepoPath ?: m2HomeSettingsLocalRepoPath ?: defaultM2RepoPath

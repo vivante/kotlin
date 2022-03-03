@@ -12,11 +12,13 @@ import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.BaseGradleIT.Companion.acceptAndroidSdkLicenses
 import org.jetbrains.kotlin.gradle.model.ModelContainer
 import org.jetbrains.kotlin.gradle.model.ModelFetcherBuildAction
+import org.jetbrains.kotlin.gradle.util.modify
 import org.jetbrains.kotlin.test.util.KtTestUtil
 import java.io.File
 import java.nio.file.*
 import kotlin.io.path.*
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 /**
  * Create new test project.
@@ -33,18 +35,21 @@ fun KGPBaseTest.project(
     enableBuildScan: Boolean = false,
     addHeapDumpOptions: Boolean = true,
     enableGradleDebug: Boolean = false,
+    enableCacheRedirector: Boolean = true,
     projectPathAdditionalSuffix: String = "",
     buildJdk: File? = null,
-    test: TestProject.() -> Unit
+    directoryPrefix: String? = null,
+    test: TestProject.() -> Unit = {}
 ): TestProject {
     val projectPath = setupProjectFromTestResources(
         projectName,
         gradleVersion,
         workingDir,
-        projectPathAdditionalSuffix
+        projectPathAdditionalSuffix,
+        directoryPrefix
     )
     projectPath.addDefaultBuildFiles()
-    projectPath.enableCacheRedirector()
+    if (enableCacheRedirector) projectPath.enableCacheRedirector()
     projectPath.enableAndroidSdk()
     if (addHeapDumpOptions) projectPath.addHeapDumpOptions()
 
@@ -66,6 +71,9 @@ fun KGPBaseTest.project(
     )
 
     if (buildJdk != null) testProject.setupNonDefaultJdk(buildJdk)
+
+    // enableFeaturePreview("GRADLE_METADATA") is no longer needed when building with Gradle 5.4 or above
+    if (gradleVersion >= GradleVersion.version("5.4")) testProject.removeEnableFeaturePreview()
 
     testProject.test()
     return testProject
@@ -189,6 +197,8 @@ open class GradleProject(
     val settingsGradleKts: Path get() = projectPath.resolve("settings.gradle.kts")
     val gradleProperties: Path get() = projectPath.resolve("gradle.properties")
 
+    val projectDir: File get() = projectPath.toFile()
+
     fun classesDir(
         sourceSet: String = "main",
         language: String = "kotlin"
@@ -213,6 +223,24 @@ open class GradleProject(
     fun relativeToProject(
         files: List<Path>
     ): List<Path> = files.map { projectPath.relativize(it) }
+
+    fun relativeToProject(vararg files: File): List<Path> =
+        relativeToProject(files.map { it.toPath() })
+
+    fun gradleProperties(): File =
+        gradleProperties.toFile().also { file ->
+            if (!file.exists()) {
+                file.createNewFile()
+            }
+        }
+
+    fun buildScript(): File = listOf(buildGradle, buildGradleKts).singleOrNull { it.toFile().exists() }?.toFile()
+        ?: error("Build script does not exists under $projectPath")
+
+    fun gradleSettingsScript(): File =
+        listOf(settingsGradleKts, settingsGradle).run {
+            singleOrNull { it.exists() } ?: first()
+        }.toFile()
 }
 
 class TestProject(
@@ -241,6 +269,10 @@ class TestProject(
             """.trimIndent()
         )
     }
+}
+
+fun TestProject.gradleBuildScript(subproject: String? = null): File {
+    return subproject?.let { subProject(subproject).buildScript() } ?: buildScript()
 }
 
 private fun commonBuildSetup(
@@ -273,7 +305,15 @@ private fun TestProject.withBuildSummary(
         println("<=== Using Gradle version: ${gradleVersion.version} ===>")
         println("<=== Run arguments: ${buildArguments.joinToString()} ===>")
         println("<=== Project path:  ${projectPath.toAbsolutePath()} ===>")
-        throw t
+
+        val errors = "(?m)^.*\\[ERROR] \\[\\S+] (.*)$".toRegex().findAll(t.localizedMessage)
+        val errorMessage = buildString {
+            appendLine("Gradle build failed")
+            appendLine()
+            appendLine("Possible errors:")
+            errors.forEach { match -> appendLine(match.groupValues[1]) }
+        }.takeIf { errors.any() } ?: t.localizedMessage
+        fail(errorMessage)
     }
 }
 
@@ -282,25 +322,21 @@ private fun TestProject.withBuildSummary(
  */
 private val testKitDir get() = Paths.get(".").resolve(".testKitDir")
 
-private val hashAlphabet: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-private fun randomHash(length: Int = 15): String {
-    return List(length) { hashAlphabet.random() }.joinToString("")
-}
-
 private fun setupProjectFromTestResources(
     projectName: String,
     gradleVersion: GradleVersion,
     tempDir: Path,
-    optionalSubDir: String
+    optionalSubDir: String,
+    directoryPrefix: String? = null,
+    parentDir: String? = null
 ): Path {
-    val testProjectPath = projectName.testProjectPath
+    val testProjectPath = directoryPrefix?.let { "$directoryPrefix/$projectName".testProjectPath } ?: projectName.testProjectPath
     assertTrue("Test project exists") { Files.exists(testProjectPath) }
     assertTrue("Test project path is a directory") { Files.isDirectory(testProjectPath) }
 
     return tempDir
         .resolve(gradleVersion.version)
-        .resolve(randomHash())
-        .resolve(projectName)
+        .resolve(parentDir ?: projectName)
         .resolve(optionalSubDir)
         .also {
             testProjectPath.copyRecursively(it)
@@ -383,6 +419,19 @@ private fun TestProject.setupNonDefaultJdk(pathToJdk: File) {
         |
         |$it        
         """.trimMargin()
+    }
+}
+
+fun GradleProject.removeEnableFeaturePreview() {
+    gradleSettingsScript().apply {
+        if (exists()) {
+            modify {
+                it.replace("enableFeaturePreview('GRADLE_METADATA')", "//")
+            }
+            modify {
+                it.replace("enableFeaturePreview(\"GRADLE_METADATA\")", "//")
+            }
+        }
     }
 }
 
