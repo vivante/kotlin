@@ -71,12 +71,14 @@ class Scope(val scopeOwnerSymbol: IrSymbol) {
         nameHint: String? = null,
         isMutable: Boolean = false,
         origin: IrDeclarationOrigin = IrDeclarationOrigin.IR_TEMPORARY_VARIABLE,
-        irType: IrType? = null
+        irType: IrType? = null,
+        startOffset: Int = irExpression.startOffset,
+        endOffset: Int = irExpression.endOffset
     ): IrVariable {
         return createTemporaryVariableDeclaration(
             irType ?: irExpression.type,
             nameHint, isMutable,
-            origin, irExpression.startOffset, irExpression.endOffset
+            origin, startOffset, endOffset
         ).apply {
             initializer = irExpression
         }

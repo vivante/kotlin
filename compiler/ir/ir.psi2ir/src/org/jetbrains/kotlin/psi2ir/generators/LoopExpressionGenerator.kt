@@ -16,6 +16,7 @@
 
 package org.jetbrains.kotlin.psi2ir.generators
 
+import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrLoop
@@ -205,7 +206,8 @@ class LoopExpressionGenerator(statementGenerator: StatementGenerator) : Statemen
             statementGenerator.declareComponentVariablesInBlock(
                 ktLoopDestructuringDeclaration,
                 irInnerBody,
-                VariableLValue(context, irLoopParameter)
+                VariableLValue(context, irLoopParameter),
+                VariableLValue(context, irLoopParameter, startOffset = UNDEFINED_OFFSET, endOffset = UNDEFINED_OFFSET)
             )
         }
 
