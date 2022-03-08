@@ -30,7 +30,6 @@ import org.xml.sax.SAXException
 import org.xml.sax.helpers.DefaultHandler
 import java.io.IOException
 import java.io.Reader
-import java.util.*
 import javax.xml.parsers.SAXParserFactory
 
 object CompilerOutputParser {
@@ -59,6 +58,8 @@ object CompilerOutputParser {
         }
         try {
             val factory = SAXParserFactory.newInstance()
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false)
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
             val parser = factory.newSAXParser()
             parser.parse(InputSource(wrappingReader), CompilerOutputSAXHandler(messageCollector, collector))
         }

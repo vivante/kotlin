@@ -85,7 +85,10 @@ public class ModuleXmlParser {
     private ModuleChunk parse(@NotNull InputStream xml) {
         try {
             setCurrentState(initial);
-            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            SAXParser saxParser = factory.newSAXParser();
             saxParser.parse(xml, new DelegatedSaxHandler() {
                 @NotNull
                 @Override
