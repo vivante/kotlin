@@ -1162,7 +1162,7 @@ class DeclarationsConverter(
 
                     fun defaultAccessorStatus() =
                         // Downward propagation of `inline` and `external` modifiers (from property to its accessors)
-                        FirDeclarationStatusImpl(propertyVisibility, modifiers.getModality(isClassOrObject = false)).apply {
+                        FirDeclarationStatusImpl(propertyVisibility, null).apply {
                             isInline = modifiers.hasInline()
                             isExternal = modifiers.hasExternal()
                         }
