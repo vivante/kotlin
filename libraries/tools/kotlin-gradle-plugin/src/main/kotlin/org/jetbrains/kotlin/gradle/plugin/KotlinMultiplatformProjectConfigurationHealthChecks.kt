@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.targets.android.findAndroidTarget
 import org.jetbrains.kotlin.gradle.targets.native.internal.CInteropCommonizerDependent
 import org.jetbrains.kotlin.gradle.targets.native.internal.from
 import org.jetbrains.kotlin.gradle.targets.native.internal.isAllowCommonizer
-import org.jetbrains.kotlin.gradle.targets.native.tasks.artifact.hasRegisteredArtifact
+import org.jetbrains.kotlin.gradle.targets.native.tasks.artifact.kotlinArtifactsExtension
 import org.jetbrains.kotlin.gradle.utils.androidPluginIds
 import org.jetbrains.kotlin.gradle.utils.runProjectConfigurationHealthCheck
 
@@ -27,7 +27,9 @@ internal fun Project.runMissingKotlinTargetsProjectConfigurationHealthCheck() = 
         .targets
         .none { it !is KotlinMetadataTarget }
 
-    if (isNoTargetsInitialized && !project.hasRegisteredArtifact) {
+    val isNoArtifactsRegistered = project.kotlinArtifactsExtension.artifacts.isEmpty()
+
+    if (isNoTargetsInitialized && isNoArtifactsRegistered) {
         throw KotlinMultiplatformProjectConfigurationException(
             """
                 Please initialize at least one Kotlin target or artifact in '${project.name} (${project.path})'.

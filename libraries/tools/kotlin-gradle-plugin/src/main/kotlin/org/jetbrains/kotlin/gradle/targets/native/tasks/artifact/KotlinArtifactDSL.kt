@@ -7,35 +7,14 @@ package org.jetbrains.kotlin.gradle.targets.native.tasks.artifact
 
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.extra
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import javax.inject.Inject
 
-private val SAFE_NAME_PATTERN = """\W""".toRegex()
-private inline fun <reified T : KotlinArtifact> Project.kotlinArtifact(configure: Action<T>) {
-    kotlinArtifact(name.replace(SAFE_NAME_PATTERN, "_"), configure)
-}
-
-private const val KOTLIN_ARTIFACT_PROPERTY = "kotlin.artifact.registered"
-internal var Project.hasRegisteredArtifact: Boolean
-    get() = extra.has(KOTLIN_ARTIFACT_PROPERTY)
-    private set(value) {
-        extra.set(KOTLIN_ARTIFACT_PROPERTY, value)
-    }
-
-private inline fun <reified T : KotlinArtifact> Project.kotlinArtifact(name: String, configure: Action<T>) {
-    project.hasRegisteredArtifact = true
-    val artifact = objects.newInstance(T::class.java)
-    artifact.addModule(this)
-    configure.execute(artifact)
-    if (artifact.validate(this, name)) {
-        artifact.registerAssembleTask(this, name)
-    }
-}
-
 //Groovy script DSL
 abstract class NativeArtifacts @Inject constructor(private val project: Project) {
+    private val SAFE_NAME_PATTERN = """\W""".toRegex()
+
     @RequiresOptIn(
         message = "This API is experimental. It may be changed in the future.",
         level = RequiresOptIn.Level.WARNING
@@ -46,51 +25,71 @@ abstract class NativeArtifacts @Inject constructor(private val project: Project)
 
     @ExperimentalArtifactDsl
     fun Library(name: String, configure: Action<KotlinNativeLibrary>) {
-        project.kotlinArtifact(name, configure)
+        addKotlinArtifact(name, configure)
     }
 
     @ExperimentalArtifactDsl
     fun Library(configure: Action<KotlinNativeLibrary>) {
-        project.kotlinArtifact(configure)
+        addKotlinArtifact(configure)
     }
 
     @ExperimentalArtifactDsl
     fun Framework(name: String, configure: Action<KotlinNativeFramework>) {
-        project.kotlinArtifact(name, configure)
+        addKotlinArtifact(name, configure)
     }
 
     @ExperimentalArtifactDsl
     fun Framework(configure: Action<KotlinNativeFramework>) {
-        project.kotlinArtifact(configure)
+        addKotlinArtifact(configure)
     }
 
     @ExperimentalArtifactDsl
     fun FatFramework(name: String, configure: Action<KotlinNativeFatFramework>) {
-        project.kotlinArtifact(name, configure)
+        addKotlinArtifact(name, configure)
     }
 
     @ExperimentalArtifactDsl
     fun FatFramework(configure: Action<KotlinNativeFatFramework>) {
-        project.kotlinArtifact(configure)
+        addKotlinArtifact(configure)
     }
 
     @ExperimentalArtifactDsl
     fun XCFramework(name: String, configure: Action<KotlinNativeXCFramework>) {
-        project.kotlinArtifact(name, configure)
+        addKotlinArtifact(name, configure)
     }
 
     @ExperimentalArtifactDsl
     fun XCFramework(configure: Action<KotlinNativeXCFramework>) {
-        project.kotlinArtifact(configure)
+        addKotlinArtifact(configure)
+    }
+
+    private inline fun <reified T : KotlinArtifact> addKotlinArtifact(configure: Action<T>) {
+        addKotlinArtifact(project.name.replace(SAFE_NAME_PATTERN, "_"), configure)
+    }
+
+    private inline fun <reified T : KotlinArtifact> addKotlinArtifact(name: String, configure: Action<T>) {
+        val artifact = project.objects.newInstance(T::class.java, name)
+        artifact.addModule(project)
+        configure.execute(artifact)
+        if (artifact.validate(project)) {
+            artifact.registerAssembleTask(project)
+        }
+        project.kotlinArtifactsExtension.artifacts.add(artifact)
     }
 }
 
 //Groovy script DSL
+private const val KOTLIN_ARTIFACTS_EXTENSION_NAME = "kotlinArtifacts"
 internal fun Project.registerKotlinArtifactsExtension() {
-    extensions.create("kotlinArtifacts", KotlinArtifactsExtension::class.java, this)
+    extensions.create(KOTLIN_ARTIFACTS_EXTENSION_NAME, KotlinArtifactsExtension::class.java, this)
 }
 
+internal val Project.kotlinArtifactsExtension: KotlinArtifactsExtension
+    get() = extensions.getByName(KOTLIN_ARTIFACTS_EXTENSION_NAME) as KotlinArtifactsExtension
+
 abstract class KotlinArtifactsExtension @Inject constructor(project: Project) {
+    val artifacts = project.container(KotlinArtifact::class.java)
+
     val DEBUG = NativeBuildType.DEBUG
     val RELEASE = NativeBuildType.RELEASE
 

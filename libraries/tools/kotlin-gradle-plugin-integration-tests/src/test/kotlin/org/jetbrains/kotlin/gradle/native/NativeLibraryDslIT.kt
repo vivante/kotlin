@@ -27,9 +27,9 @@ class NativeLibraryDslIT : BaseGradleIT() {
                 assertSuccessful()
                 assertTasksRegistered(
                     ":shared:assembleMyfatframeFatFramework",
-                    ":shared:assembleMyframeFramework",
-                    ":shared:assembleMylibSharedLibrary",
-                    ":shared:assembleMyslibSharedLibrary",
+                    ":shared:assembleMyframeFrameworkIosArm64",
+                    ":shared:assembleMylibSharedLibraryLinuxX64",
+                    ":shared:assembleMyslibSharedLibraryLinuxX64",
                     ":shared:assembleSharedXCFramework"
                 )
                 assertTasksNotRegistered(
@@ -40,8 +40,8 @@ class NativeLibraryDslIT : BaseGradleIT() {
                 assertSuccessful()
                 assertTasksRegistered(
                     ":lib:assembleGroofatframeFatFramework",
-                    ":lib:assembleGrooframeFramework",
-                    ":lib:assembleGroolibSharedLibrary",
+                    ":lib:assembleGrooframeFrameworkIosArm64",
+                    ":lib:assembleGroolibSharedLibraryIosX64",
                     ":lib:assembleLibXCFramework"
                 )
             }

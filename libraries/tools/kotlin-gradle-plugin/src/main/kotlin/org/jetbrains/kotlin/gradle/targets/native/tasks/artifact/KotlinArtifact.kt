@@ -5,8 +5,8 @@
 
 package org.jetbrains.kotlin.gradle.targets.native.tasks.artifact
 
-import groovy.lang.Closure
 import org.gradle.api.Action
+import org.gradle.api.Named
 import org.gradle.api.Project
 import org.gradle.api.attributes.Usage
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonToolOptions
@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.konan.target.presetName
 
-abstract class KotlinArtifact {
+abstract class KotlinArtifact(val artifactName: String) : Named {
     internal val modules = mutableSetOf<Any>()
     fun setModules(vararg project: Any) {
         modules.clear()
@@ -29,11 +29,13 @@ abstract class KotlinArtifact {
         modules.add(project)
     }
 
-    internal abstract fun validate(project: Project, name: String): Boolean
-    internal abstract fun registerAssembleTask(project: Project, name: String)
+    fun getTaskName(): String = lowerCamelCaseName("assemble", name)
+
+    internal abstract fun validate(project: Project): Boolean
+    internal abstract fun registerAssembleTask(project: Project)
 }
 
-abstract class KotlinNativeArtifact : KotlinArtifact() {
+abstract class KotlinNativeArtifact(artifactName: String) : KotlinArtifact(artifactName) {
     var modes: Set<NativeBuildType> = NativeBuildType.DEFAULT_BUILD_TYPES
     fun modes(vararg modes: NativeBuildType) {
         this.modes = modes.toSet()
@@ -52,15 +54,15 @@ abstract class KotlinNativeArtifact : KotlinArtifact() {
         binaryOptions[name] = value
     }
 
-    override fun validate(project: Project, name: String): Boolean {
+    override fun validate(project: Project): Boolean {
         val logger = project.logger
         if (modules.isEmpty()) {
-            logger.error("Native library '${name}' wasn't configured because it requires at least one module for linking")
+            logger.error("Native artifact '$artifactName' wasn't configured because it requires at least one module for linking")
             return false
         }
 
         if (modes.isEmpty()) {
-            logger.error("Native library '${name}' wasn't configured because it requires at least one build type in modes")
+            logger.error("Native artifact '$artifactName' wasn't configured because it requires at least one build type in modes")
             return false
         }
 
