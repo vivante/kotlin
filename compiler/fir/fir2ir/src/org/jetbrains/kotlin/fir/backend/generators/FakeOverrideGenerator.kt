@@ -16,8 +16,6 @@ import org.jetbrains.kotlin.fir.declarations.utils.allowsToHaveFakeOverride
 import org.jetbrains.kotlin.fir.declarations.utils.isExpect
 import org.jetbrains.kotlin.fir.declarations.utils.isLocal
 import org.jetbrains.kotlin.fir.declarations.utils.visibility
-import org.jetbrains.kotlin.fir.declarations.utils.*
-import org.jetbrains.kotlin.fir.lazy.Fir2IrLazyClass
 import org.jetbrains.kotlin.fir.resolve.defaultType
 import org.jetbrains.kotlin.fir.resolve.toSymbol
 import org.jetbrains.kotlin.fir.scopes.FirTypeScope
@@ -37,7 +35,6 @@ import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.IdSignature
 import org.jetbrains.kotlin.ir.util.parentAsClass
-import org.jetbrains.kotlin.ir.util.withScope
 import org.jetbrains.kotlin.load.java.JavaDescriptorVisibilities
 import org.jetbrains.kotlin.name.Name
 
@@ -294,9 +291,8 @@ class FakeOverrideGenerator(
         klass, irClass, originalSymbol,
         createFakeOverrideSymbol = { firFunction, callableSymbol ->
             FirFakeOverrideGenerator.createSubstitutionOverrideFunction(
-                session, firFunction, callableSymbol,
+                session, callableSymbol, firFunction,
                 newDispatchReceiverType = klass.defaultType(),
-                derivedClassId = klass.symbol.classId,
                 isExpect = (klass as? FirRegularClass)?.isExpect == true
             )
         },
@@ -313,9 +309,8 @@ class FakeOverrideGenerator(
         klass, irClass, originalSymbol,
         createFakeOverrideSymbol = { firProperty, callableSymbol ->
             FirFakeOverrideGenerator.createSubstitutionOverrideProperty(
-                session, firProperty, callableSymbol,
+                session, callableSymbol, firProperty,
                 newDispatchReceiverType = klass.defaultType(),
-                derivedClassId = klass.symbol.classId,
                 isExpect = (klass as? FirRegularClass)?.isExpect == true
             )
         },

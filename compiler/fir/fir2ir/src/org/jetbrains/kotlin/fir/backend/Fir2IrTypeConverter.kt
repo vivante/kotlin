@@ -176,7 +176,7 @@ class Fir2IrTypeConverter(
                         lower.replaceArguments(upper.getArguments())
                     } else lower
                     (intermediate.withNullability(upper.isNullable) as ConeKotlinType)
-                        .withAttributes(lower.attributes, session.typeContext)
+                        .withAttributes(lower.attributes)
                         .toIrType(
                             typeContext, annotations, hasFlexibleNullability = lower.nullability != upper.nullability
                         )

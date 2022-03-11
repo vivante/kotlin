@@ -1323,8 +1323,6 @@ class Fir2IrDeclarationStorage(
             }
         }
         propertyCache[fir] = irProperty
-        // NB: this is needed to prevent recursions in case of self bounds
-        (irProperty as Fir2IrLazyProperty).prepareTypeParameters()
         return irProperty
     }
 
