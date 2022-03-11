@@ -5,9 +5,9 @@ const val a = <!EVALUATED: `1`!>try {
     1
 }<!>
 
-const val b = <!WAS_NOT_EVALUATED: `
+const val b = 10 <!WAS_NOT_EVALUATED: `
 Exception java.lang.ArithmeticException: / by zero
-	at DivideByZeroKt.<clinit>(divideByZero.kt:8)`!>10 / 0<!>
+	at DivideByZeroKt.<clinit>(divideByZero.kt:8)`!>/ 0<!>
 
 // not working for now, but maybe will be supported
 //fun someFunWithCompileTimeInside() {
