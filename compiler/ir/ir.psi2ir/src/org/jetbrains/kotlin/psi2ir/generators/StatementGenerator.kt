@@ -22,13 +22,13 @@ import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.VariableDescriptorWithAccessors
 import org.jetbrains.kotlin.ir.IrStatement
-import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.Scope
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationOrigin
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.*
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
+import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.ir.util.referenceFunction
 import org.jetbrains.kotlin.ir.util.render
 import org.jetbrains.kotlin.psi.*
@@ -135,7 +135,7 @@ class StatementGenerator(
 
     override fun visitDestructuringDeclaration(multiDeclaration: KtDestructuringDeclaration, data: Nothing?): IrStatement {
         val irBlock = IrCompositeImpl(
-            UNDEFINED_OFFSET, UNDEFINED_OFFSET,
+            SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
             context.irBuiltIns.unitType, IrStatementOrigin.DESTRUCTURING_DECLARATION
         )
         val ktInitializer = multiDeclaration.initializer!!
@@ -147,7 +147,7 @@ class StatementGenerator(
             multiDeclaration,
             irBlock,
             VariableLValue(context, containerVariable),
-            VariableLValue(context, containerVariable, startOffset = UNDEFINED_OFFSET, endOffset = UNDEFINED_OFFSET)
+            VariableLValue(context, containerVariable, startOffset = SYNTHETIC_OFFSET, endOffset = SYNTHETIC_OFFSET)
         )
 
         return irBlock
@@ -175,7 +175,7 @@ class StatementGenerator(
             containerValue = restContainerValue
 
             val irComponentCall = callGenerator.generateCall(
-                UNDEFINED_OFFSET, UNDEFINED_OFFSET,
+                SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
                 componentSubstitutedCall,
                 IrStatementOrigin.COMPONENT_N.withIndex(index + 1)
             )
