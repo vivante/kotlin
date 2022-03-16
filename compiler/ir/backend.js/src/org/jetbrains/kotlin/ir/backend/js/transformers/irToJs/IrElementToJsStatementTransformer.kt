@@ -47,7 +47,7 @@ class IrElementToJsStatementTransformer : BaseIrElementToJsNodeTransformer<JsSta
             if (label != null) {
                 JsLabel(label, JsBlock(wrappedStatements))
             } else {
-                JsVirtualBlock(wrappedStatements)
+                JsCompositeBlock(wrappedStatements)
             }
         } else {
             JsBlock(statements)
@@ -64,7 +64,6 @@ class IrElementToJsStatementTransformer : BaseIrElementToJsNodeTransformer<JsSta
     }
 
     override fun visitComposite(expression: IrComposite, context: JsGenerationContext): JsStatement {
-        // TODO introduce JsCompositeBlock?
         return JsBlock(expression.statements.map { it.accept(this, context) })
     }
 
