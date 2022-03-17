@@ -7,12 +7,8 @@ package org.jetbrains.kotlin.fir.resolve.calls
 
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.utils.isExpect
-import org.jetbrains.kotlin.fir.diagnostics.ConeSimpleDiagnostic
-import org.jetbrains.kotlin.fir.diagnostics.DiagnosticKind
 import org.jetbrains.kotlin.fir.resolve.inference.InferenceComponents
-import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterLookupTag
 import org.jetbrains.kotlin.fir.types.*
-import org.jetbrains.kotlin.fir.types.impl.ConeTypeParameterTypeImpl
 import org.jetbrains.kotlin.name.StandardClassIds
 import org.jetbrains.kotlin.resolve.calls.results.*
 import org.jetbrains.kotlin.types.model.KotlinTypeMarker
@@ -169,19 +165,12 @@ abstract class AbstractConeCallConflictResolver(
             addIfNotNull(function.receiverTypeRef?.coneType)
             val typeForCallableReference = call.resultingTypeForCallableReference
             if (typeForCallableReference != null) {
-                typeForCallableReference.typeArguments
+                val typeArguments = typeForCallableReference.typeArguments.dropLast(1).let {
+                    if (function.receiverTypeRef != null) it.drop(1) else it
+                }
+                typeArguments
                     .mapTo(this) {
-                        when (it) {
-                            is ConeTypeVariableType -> {
-                                val typeParameterLookupTag = it.lookupTag.originalTypeParameter as ConeTypeParameterLookupTag?
-                                if (typeParameterLookupTag == null) {
-                                    ConeErrorType(ConeSimpleDiagnostic("no type parameter for type variable", DiagnosticKind.Other))
-                                } else {
-                                    ConeTypeParameterTypeImpl(typeParameterLookupTag, it.isNullable)
-                                }
-                            }
-                            else -> it as ConeKotlinType
-                        }
+                        (it as ConeKotlinType).removeTypeVariableTypes(inferenceComponents.session.typeContext)
                     }
             } else {
                 call.argumentMapping?.mapTo(this) { it.value.argumentType() }
