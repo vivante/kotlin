@@ -1082,3 +1082,10 @@ afterEvaluate {
         }
     }
 }
+
+/**
+ * @see [checkExpectedGradlePropertyValues]
+ */
+afterEvaluate {
+    checkExpectedGradlePropertyValues()
+}
